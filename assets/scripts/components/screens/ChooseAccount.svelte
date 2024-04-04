@@ -16,7 +16,7 @@
     <ul class="descriptions">
       <li>
         <strong>Gitlab.com</strong> qui est un hébergeur professionnel
-        (si vous n'avez pas encore de compte, Gitlab <a href="https://docs.gitlab.com/ee/security/identity_verification.html#credit-card-verification">vous demandera votre numéro de carte de crédit</a> pour vérifier votre identité)
+        (si vous n'avez pas encore de compte, Gitlab <a href="https://docs.gitlab.com/ee/security/identity_verification.html#credit-card-verification">vous demandera votre numéro de carte de crédit</a> juste pour vérifier votre identité)
       </li>
       <li>
         <strong>ScribouGit</strong>, l'hébergement géré par l'équipe de Scribouilli
