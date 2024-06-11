@@ -5,15 +5,14 @@ import { replaceComponent } from '../routeComponentLifeCycle'
 import store from '../store'
 import Login from '../components/screens/Login.svelte'
 
-const TOCTOCTOC_ORIGIN = `https://toctoctoc.lechappeebelle.team`
-
+const TOCTOCTOC_ORIGIN = `https://toctoctoc2024.scribouilli.org`
 
 const oAuthAppByProvider = new Map([
   [
     'github.com',
     {
       origin: 'https://github.com',
-      client_id: '64ecce0b01397c2499a6',
+      client_id: 'Ov23li2JrraDVan1O136',
     },
   ],
   [
