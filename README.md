@@ -1,9 +1,11 @@
-# scribouilli
+# scribouilli 2024
 
 [Scribouilli](https://scribouilli.org) est un outil pour créer un petit site
 facilement. L'intention, c'est de permettre à des non-informaticiennes de créer
 un petit site rapidement / facilement et d'avoir une relation saine et sereine
 avec son contenu.
+
+Cette version tente d'aider à faire des petits sites pour les législatives 2024
 
 ## Installation
 
