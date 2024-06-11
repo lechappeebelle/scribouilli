@@ -5,7 +5,7 @@ facilement. L'intention, c'est de permettre à des non-informaticiennes de crée
 un petit site rapidement / facilement et d'avoir une relation saine et sereine
 avec son contenu.
 
-Cette version tente d'aider à faire des petits sites pour les législatives 2024
+Cette version tente d'aider à faire des petits sites pour les législatives 2024.
 
 ## Installation
 
