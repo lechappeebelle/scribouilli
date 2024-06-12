@@ -7,28 +7,26 @@
 
     <h2>Se connecter</h2>
     <p>
-      Scribouilli a besoin de se connecter à l'application qui hébergera votre petit&nbsp;site
+      Scribouilli 2024 a besoin de se connecter à Github pour publier votre site.
     </p>
     <p>
-      Vous pouvez utiliser :
+      Vous allez créer votre compte sur Github, idéalement avec :
     </p>
 
     <ul class="descriptions">
       <li>
-        <strong>Gitlab.com</strong> qui est un hébergeur professionnel
-        (si vous n'avez pas encore de compte, Gitlab <a href="https://docs.gitlab.com/ee/security/identity_verification.html#credit-card-verification">vous demandera votre numéro de carte de crédit</a> juste pour vérifier votre identité)
+        un nom de compte "neutre" pour garder votre anonymat (par exemple, le nom du candidat + numéro de département)
       </li>
       <li>
-        <strong>ScribouGit</strong>, l'hébergement géré par l'équipe de Scribouilli
-        (si vous n'avez pas encore de compte, nous prendrons le temps de le valider manuellement)
+        un mot de passe que vous n'utilisez par ailleurs, notamment si vous avez besoin de le faire passer à d'autres militants
       </li>
-      <li>Microsoft GitHub®, si vous l'utilisez déjà</li>
     </ul>
+    <p>
+      Une fois le compte créé <strong>revenez sur cet onglet</strong>, la redirection n'est pas automatique !!
+    </p>
 
     <ul class="buttons">
-      <li><a href="./account?provider=gitlab.com" class="btn">Gitlab</a></li>
-      <li><a href="./account?provider=git.scribouilli.org" class="btn">ScribouGit</a></li>
-      <li><a href="./account?provider=github.com" class="btn">Github</a></li>
+      <li><a href="./account?provider=github.com" class="btn">Se connecter à Github</a></li>
     </ul>
   </section>
 </Skeleton>
