@@ -11,14 +11,9 @@ export const CUSTOM_CSS_PATH = 'assets/css/custom.css'
 // @ts-ignore
 export const templates = [
   {
-    url: 'https://github.com/Scribouilli/site-template.git',
-    description: 'mon site vitrine ou mon blog',
-    githubRepoId: 'Scribouilli/site-template',
-  },
-  {
-    url: 'https://github.com/Scribouilli/site-template-framalibre.git',
-    description: 'ma liste de recommandations liée à Framalibre',
-    githubRepoId: 'Scribouilli/site-template-framalibre',
+    url: 'https://github.com/Scribouilli/site-template-2024.git',
+    description: 'un site de candidat·e aux législatives 2024',
+    githubRepoId: 'Scribouilli/site-template-2024',
   },
 ]
 
