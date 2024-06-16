@@ -1,8 +1,8 @@
 //@ts-check
 
-import yaml from 'js-yaml'
+import {stringify} from 'yaml'
 
-import {getCurrentRepoConfig} from './current-repository.js'
+import {getRepoConfig} from './repoConfig.js'
 import { writeFileAndPushChanges } from './file.js'
 
 /** @typedef {import('../GitAgent.js').default} GitAgent */
@@ -24,6 +24,8 @@ export default async function autoUpdateScribouilliWebsite(gitAgent){
     const scribouilliRepo = await isScribouilliRepo(gitAgent)
 
     if(scribouilliRepo){
+        
+
         throw `PPP
             check check si la personne sait se débrouiller
             - si oui, ne pas faire les updates automatisées
@@ -39,7 +41,7 @@ export default async function autoUpdateScribouilliWebsite(gitAgent){
  * @returns {Promise<boolean>}
  */
 export async function isScribouilliRepo(gitAgent){
-    const explicitelyScribouilliRepo = await isExplicitScribouilliRepo()
+    const explicitelyScribouilliRepo = await isExplicitScribouilliRepo(gitAgent)
 
     if(explicitelyScribouilliRepo){
         console.info('Repo explicitement Scribouilli')
@@ -50,7 +52,7 @@ export async function isScribouilliRepo(gitAgent){
         if(implicitScribouilliRepo){
             // Cette branche ne sera plus nécessaire en 2026, par exemple
             console.info('Repo implicitement Scribouilli. On le rend explicitement Scribouilli')
-            await makeExplicitScribouilliRepo()
+            await makeExplicitScribouilliRepo(gitAgent)
             return true
         }
         else{
@@ -60,23 +62,23 @@ export async function isScribouilliRepo(gitAgent){
 }
 
 /**
- * 
+ * @param {GitAgent} gitAgent 
  * @returns {Promise<boolean>}
  */
-async function isExplicitScribouilliRepo(){
-    return getCurrentRepoConfig()
+async function isExplicitScribouilliRepo(gitAgent){
+    return getRepoConfig(gitAgent)
     .then(config => !!config.scribouilli)
 }
 
 /**
- * 
+ * @param {GitAgent} gitAgent 
  * @returns {Promise<void>}
  */
-async function makeExplicitScribouilliRepo(){
-    const config = await getCurrentRepoConfig()
+async function makeExplicitScribouilliRepo(gitAgent){
+    const config = await getRepoConfig(gitAgent)
     config.scribouilli = true
 
-    const configYmlContent = yaml.dump(config)
+    const configYmlContent = stringify(config)
 
     console.log('configYmlContent', configYmlContent)
     return writeFileAndPushChanges(

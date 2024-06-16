@@ -1,22 +1,23 @@
 //@ts-check
 
 import page from 'page'
-import yaml from 'js-yaml'
+import {parse, stringify} from 'yaml'
 
-import store from './../store.js'
+import store from '../store.js'
 import ScribouilliGitRepo, {
   makeRepoId,
   makePublicRepositoryURL,
-} from './../scribouilliGitRepo.js'
+} from '../scribouilliGitRepo.js'
 import GitAgent from '../GitAgent.js'
-import { handleErrors } from './../utils.js'
+import { handleErrors } from '../utils.js'
 import { fetchAuthenticatedUserLogin } from './current-user.js'
-import makeBuildStatus from './../buildStatus.js'
+import makeBuildStatus from '../buildStatus.js'
 import { writeFileAndPushChanges } from './file.js'
 import { getPagesList } from './page.js'
 import { getArticlesList } from './article.js'
 import { getOAuthServiceAPI } from '../oauth-services-api/index.js'
 import { CUSTOM_CSS_PATH } from '../config.js'
+import {getRepoConfig} from './repoConfig.js'
 import autoUpdateScribouilliWebsite from './autoUpdateScribouilliWebsite.js'
 
 /** @typedef {import('isomorphic-git')} isomorphicGit */
@@ -149,7 +150,7 @@ export const setBaseUrlInConfigIfNecessary = async baseUrl => {
     }
   }
 
-  const config = await getCurrentRepoConfig()
+  const config = await getRepoConfig()
   /** @type {string} */
   const currentBaseURL = config.baseurl || ''
 
@@ -165,7 +166,7 @@ export const setBaseUrlInConfigIfNecessary = async baseUrl => {
       config.baseurl = newBaseUrl
     }
 
-    const configYmlContent = yaml.dump(config)
+    const configYmlContent = stringify(config)
 
     console.log('configYmlContent', configYmlContent)
     return writeFileAndPushChanges(
@@ -176,24 +177,7 @@ export const setBaseUrlInConfigIfNecessary = async baseUrl => {
   }
 }
 
-/**
- * @returns {Promise<any>}
- */
-export const getCurrentRepoConfig = () => {
-  const {currentRepository, gitAgent} = store.state
 
-  if (!currentRepository) {
-    throw new TypeError('currentRepository is undefined')
-  }
-  if (!gitAgent) {
-    throw new TypeError('gitAgent is undefined')
-  }
-
-  return gitAgent
-    .getFile('_config.yml')
-    .then(configStr => yaml.load(configStr))
-    .catch(handleErrors)
-}
 
 /**
  * @param {string} css
