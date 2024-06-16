@@ -17,6 +17,7 @@ import { getPagesList } from './page.js'
 import { getArticlesList } from './article.js'
 import { getOAuthServiceAPI } from '../oauth-services-api/index.js'
 import { CUSTOM_CSS_PATH } from '../config.js'
+import autoUpdateScribouilliWebsite from './autoUpdateScribouilliWebsite.js'
 
 /** @typedef {import('isomorphic-git')} isomorphicGit */
 
@@ -98,6 +99,8 @@ export const setCurrentRepositoryFromQuerystring = async querystring => {
 
   getCurrentRepoArticles()
   getCurrentRepoPages()
+
+  autoUpdateScribouilliWebsite(gitAgent)
 
   setBuildStatus(scribouilliGitRepo)
 }
