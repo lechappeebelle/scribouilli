@@ -135,7 +135,8 @@ export const setBaseUrlInConfigIfNecessary = async baseUrl => {
   if (baseUrl) {
     newBaseUrl = baseUrl.replace(/\/$/, '')
   } else {
-    if (currentRepository.origin === 'https://github.com') {
+    let hostname = new URL(currentRepository.origin).hostname;
+    if (hostname === 'github.com') {
       const publishedWebsiteURL = await currentRepository.publishedWebsiteURL
       const url = new URL(publishedWebsiteURL)
 
