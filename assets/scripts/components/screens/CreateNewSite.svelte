@@ -43,7 +43,7 @@
       <div class="wrapper">
         <form on:submit|preventDefault={onSubmit}>
           <div>
-            <label for="name">Nom de votre site</label>
+            <label for="name">Nom de votre site (ne pas mettre d'espaces)</label>
             <input
               bind:value={name}
               type="text"
