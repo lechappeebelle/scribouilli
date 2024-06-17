@@ -8,7 +8,7 @@
 <Skeleton>
   <section class="screen" id="welcome">
     {#if showWelcome}
-      <h2>Créez votre petit site facilement !</h2>
+      <h2>Créez votre petit site pour un·e candidat·e du Nouveau Front Populaire !</h2>
 
       <a href="./choose-account" class="btn">C'est parti !</a>
     {:else if isFetchingCurrentUserRepos }
