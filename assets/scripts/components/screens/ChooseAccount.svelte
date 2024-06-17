@@ -18,7 +18,7 @@
         un nom de compte "neutre" pour garder votre anonymat (par exemple, le nom du candidat + numéro de département)
       </li>
       <li>
-        un mot de passe que vous n'utilisez par ailleurs, notamment si vous avez besoin de le faire passer à d'autres militants
+        un mot de passe que vous n'utilisez pas ailleurs, notamment si vous avez besoin de le faire passer à d'autres militants
       </li>
     </ul>
     <p>
