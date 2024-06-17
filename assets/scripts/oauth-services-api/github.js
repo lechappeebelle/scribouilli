@@ -80,7 +80,7 @@ export default class GitHubAPI {
         body: JSON.stringify({
           owner,
           repo: repoName,
-          names: ['site-scribouilli'],
+          names: ['site-scribouilli2024'],
         }),
       })
         .then(() => {
