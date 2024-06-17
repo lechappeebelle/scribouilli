@@ -84,10 +84,6 @@
         <h2>
           {title}
         </h2>
-        <a
-          href="{atelierPrefix}?repoName={repoName}&account={account}"
-          class="btn btn__medium">{newContentButtonText}</a
-        >
       </header>
 
       <div>
