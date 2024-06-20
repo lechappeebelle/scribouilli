@@ -125,7 +125,7 @@ export const createRepositoryForCurrentAccount = async (repoName, template) => {
   const escapedRepoName = repoName
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-zA-Z0-9_-]+/g, '-')
+    .replace(/[^\w\.-]/g, '-') // see https://stackoverflow.com/a/59082561
     .toLowerCase()
 
   const oAuthProvider = store.state.oAuthProvider
@@ -151,23 +151,21 @@ export const createRepositoryForCurrentAccount = async (repoName, template) => {
 
   store.mutations.setCurrentRepository(scribouilliGitRepo)
 
-  const repoId = makeRepoId(owner, repoName)
-
-  const gitAgent = new GitAgent({
-    repoId,
-    remoteURL: `${origin}/${repoId}.git`,
-    onMergeConflict : (/** @type {import("./../store.js").ResolutionOption[] | undefined} */ resolutionOptions) => {
-      store.mutations.setConflict(resolutionOptions)
-    },
-    auth: getOAuthServiceAPI().getOauthUsernameAndPassword()
-  })
-
-  store.mutations.setGitAgent(gitAgent)
-
   return (
     getOAuthServiceAPI()
       .createDefaultRepository(scribouilliGitRepo, template)
-      .then(() => {
+      .then(({repoId, cloneUrl}) => {
+        const gitAgent = new GitAgent({
+          repoId: repoId || makeRepoId(owner, escapedRepoName),
+          remoteURL: cloneUrl || `${origin}/${repoId}.git`,
+          onMergeConflict : (/** @type {import("./../store.js").ResolutionOption[] | undefined} */ resolutionOptions) => {
+            store.mutations.setConflict(resolutionOptions)
+          },
+          auth: getOAuthServiceAPI().getOauthUsernameAndPassword()
+        })
+      
+        store.mutations.setGitAgent(gitAgent)
+
         // Il est nécessaire d'attendre que le repo soit prêt sur la remote
         // avant de pouvoir le cloner localement.
         return waitRepoReady(scribouilliGitRepo)
