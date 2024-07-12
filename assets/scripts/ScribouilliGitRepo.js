@@ -1,3 +1,7 @@
+//@ts-check
+
+/** @import GitAgent from "./GitAgent" */
+
 /**
  * @type {ScribouilliGitRepo}
  */
@@ -11,6 +15,7 @@ export default class {
    * @param { string } _.owner
    * @param { string } _.repoName
    * @param { OAuthServiceAPI } _.gitServiceProvider
+   * @param { GitAgent } _.gitAgent
    */
   constructor({
     repoId,
@@ -18,12 +23,14 @@ export default class {
     publicRepositoryURL,
     owner,
     repoName,
-    gitServiceProvider
+    gitServiceProvider,
+    gitAgent
   }) {
     this.origin = origin
     this.publicRepositoryURL = publicRepositoryURL
     this.owner = owner
     this.repoName = repoName
+    this.gitAgent = gitAgent
 
     this.repoId = repoId ? repoId : makeRepoId(owner, repoName)
 
@@ -38,6 +45,13 @@ export default class {
         })
       }, 1000)
     })
+
+    throw `PPP 
+      - recups + parser le _config.yml ici avec la fonction parseDocument (qui préserve les commentaires)
+      - permettre un accès en lecture à la config
+        - remplacer toutes les lectures de _config.yml dans le code par ce qu'il se passe ici
+      - permettre un changeConfig avec un Object.assign + commit push direct   
+    `
   }
 
 }

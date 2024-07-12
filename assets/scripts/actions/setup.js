@@ -5,7 +5,7 @@ import page from 'page'
 import store from './../store.js'
 import ScribouilliGitRepo, {
   makePublicRepositoryURL, makeRepoId,
-} from './../scribouilliGitRepo.js'
+} from '../ScribouilliGitRepo.js'
 import { getOAuthServiceAPI } from './../oauth-services-api/index.js'
 import { makeAtelierListPageURL } from './../routes/urls.js'
 import { logMessage } from './../utils.js'
@@ -137,19 +137,6 @@ export const createRepositoryForCurrentAccount = async (repoName, template) => {
 
   const origin = oAuthProvider.origin
 
-  const scribouilliGitRepo = new ScribouilliGitRepo({
-    owner: owner,
-    repoName: escapedRepoName,
-    origin: origin,
-    publicRepositoryURL: makePublicRepositoryURL(
-      owner,
-      escapedRepoName,
-      origin,
-    ),
-    gitServiceProvider: getOAuthServiceAPI(),
-  })
-
-  store.mutations.setCurrentRepository(scribouilliGitRepo)
 
   const repoId = makeRepoId(owner, repoName)
 
@@ -163,6 +150,23 @@ export const createRepositoryForCurrentAccount = async (repoName, template) => {
   })
 
   store.mutations.setGitAgent(gitAgent)
+
+
+  const scribouilliGitRepo = new ScribouilliGitRepo({
+    owner: owner,
+    repoName: escapedRepoName,
+    origin: origin,
+    publicRepositoryURL: makePublicRepositoryURL(
+      owner,
+      escapedRepoName,
+      origin,
+    ),
+    gitServiceProvider: getOAuthServiceAPI(),
+    gitAgent
+  })
+
+  store.mutations.setCurrentRepository(scribouilliGitRepo)
+
 
   return (
     getOAuthServiceAPI()

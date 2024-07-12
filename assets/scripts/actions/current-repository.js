@@ -7,7 +7,7 @@ import store from '../store.js'
 import ScribouilliGitRepo, {
   makeRepoId,
   makePublicRepositoryURL,
-} from '../scribouilliGitRepo.js'
+} from '../ScribouilliGitRepo.js'
 import GitAgent from '../GitAgent.js'
 import { handleErrors } from '../utils.js'
 import { fetchAuthenticatedUserLogin } from './current-user.js'
@@ -70,16 +70,6 @@ export const setCurrentRepositoryFromQuerystring = async querystring => {
   const origin = oAuthProvider.origin
   const repoId = makeRepoId(owner, repoName)
 
-  const scribouilliGitRepo = new ScribouilliGitRepo({
-    owner,
-    repoName,
-    repoId,
-    origin: origin,
-    publicRepositoryURL: makePublicRepositoryURL(owner, repoName, origin),
-    gitServiceProvider: getOAuthServiceAPI(),
-  })
-
-  store.mutations.setCurrentRepository(scribouilliGitRepo)
 
   const gitAgent = new GitAgent({
     repoId,
@@ -91,6 +81,18 @@ export const setCurrentRepositoryFromQuerystring = async querystring => {
   })
 
   store.mutations.setGitAgent(gitAgent)
+
+  const scribouilliGitRepo = new ScribouilliGitRepo({
+    owner,
+    repoName,
+    repoId,
+    origin: origin,
+    publicRepositoryURL: makePublicRepositoryURL(owner, repoName, origin),
+    gitServiceProvider: getOAuthServiceAPI(),
+    gitAgent
+  })
+
+  store.mutations.setCurrentRepository(scribouilliGitRepo)
 
   const { login, email } = await fetchAuthenticatedUserLogin()
 

@@ -18,9 +18,3 @@ export const getRepoConfig = (gitAgent) => {
       .then(configStr => parse(configStr))
 }
 
-throw `PPP
-    parser le yaml avec la fonction parseDocument (qui préserve les commentaires)
-    Créer une fonction qui permet de rajouter du contenu à la config (tout en gardant les commentaires)
-        via https://eemeli.org/yaml/#creating-nodes
-    
-`
