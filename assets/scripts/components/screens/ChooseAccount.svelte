@@ -20,7 +20,7 @@
       </li>
       <li>
         <strong>ScribouGit</strong>, l'hébergement géré par l'équipe de Scribouilli
-        (si vous n'avez pas encore de compte, nous prendrons le temps de le valider manuellement)
+        (si vous n'avez pas encore de compte, nous prendrons le temps de le valider manuellement (cela peut prendre quelques jours))
       </li>
       <li>Microsoft GitHub®, si vous l'utilisez déjà</li>
     </ul>
