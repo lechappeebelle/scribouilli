@@ -71,6 +71,8 @@
           <li>un message pour nous indiquer quel genre de petit site vous voulez
           créer.</li>
         </ul>
+        <p> Pour information, la création du compte pourrait prendre quelques jours de notre côté, on vous préviendra par mail quand c'est fait !
+        </p>
       </div>
     </section>
   {/if}
