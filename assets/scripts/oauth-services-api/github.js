@@ -4,6 +4,8 @@ import './../types.js'
 
 const GITHUB_JSON_ACCEPT_HEADER = 'application/vnd.github+json'
 
+const GITHUB_GRAPHQL_ENDPOINT = 'https://api.github.com/graphql'
+
 /**
  * @implements {OAuthServiceAPI}
  */
@@ -27,10 +29,17 @@ export default class GitHubAPI {
     }
   }
 
+  /** @type {OAuthServiceAPI["getAuthenticatedUser"]} */
   getAuthenticatedUser() {
-    return this.callAPI(`${gitHubApiBaseUrl}/user`).then(response => {
-      return response.json()
-    })
+    const query = `query {
+      viewer {
+        login
+        email
+      }
+    }`
+
+    return this.graphQLCall(query)
+    .then(resp => resp.data.viewer)
   }
 
   /** @type {OAuthServiceAPI["getUserEmails"]} */
@@ -137,21 +146,24 @@ export default class GitHubAPI {
 
   /** @type {OAuthServiceAPI["getPagesWebsiteDeploymentStatus"]} */
   getPagesWebsiteDeploymentStatus({ repoId }) {
-    // TODO: We need to add the `sha` parameter to avoid the GitHub API to return
-    // cached data.
-    return this.callAPI(
-      `${gitHubApiBaseUrl}/repos/${repoId}/deployments?environment=github-pages`,
-    )
-      .then(response => response.json())
-      .then(json => {
-        const statusesUrl = json[0].statuses_url
+    const [owner, name] = repoId.split('/')
 
-        return this.callAPI(`${statusesUrl}?per_page=1`)
-      })
-      .then(response => response.json())
-      .then(json => {
-        return json[0].state
-      })
+    const query = `query {
+      repository(owner: "${owner}", name: "${name}") {
+        deployments(last: 1) {
+          nodes {
+            statuses(first: 1){
+              nodes {
+                state
+              }
+            }
+          }
+        }
+      }
+    }`
+
+    return this.graphQLCall(query)
+    .then(resp => resp.data.repository.deployments.nodes[0].statuses.nodes[0].state.toLowerString())
   }
 
   /** @type {OAuthServiceAPI["isPagesWebsiteBuilt"]} */
@@ -217,6 +229,35 @@ export default class GitHubAPI {
         throw 'INVALIDATE_TOKEN'
       }
       return httpResp
+    })
+  }
+
+  
+
+  /**
+   * 
+   * @param {string} query 
+   * @returns {Promise<any>}
+   */
+  graphQLCall(query){
+    return fetch(GITHUB_GRAPHQL_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        Authorization: 'token ' + this.accessToken,
+      },
+      body: JSON.stringify({query: query})
+    })
+    .then(httpResp => {
+      if (httpResp.status === 404) {
+        throw 'NOT_FOUND'
+      }
+
+      if (httpResp.status === 401) {
+        this.accessToken = undefined
+        console.debug('this accessToken : ', this.accessToken)
+        throw 'INVALIDATE_TOKEN'
+      }
+      return httpResp.json()
     })
   }
 }
