@@ -3,10 +3,11 @@ import store from '../store.js'
 import GitHubAPI from './github.js'
 import GitlabAPI from './gitlab.js'
 
-import './../types.js'
+/** @import {GithubOptions, GitlabOptions, OAuthServiceAPI} from '../types.js' */
+/** @import {OAuthProvider} from '../store.js' */
 
 /**
- * @overlaod
+ * @overload
  * @param {'github'} type
  * @param {GithubOptions} options
  *
@@ -14,7 +15,7 @@ import './../types.js'
  */
 
 /**
- * @overlaod
+ * @overload
  * @param {'gitlab'} type
  * @param {GitlabOptions} options
  *
@@ -22,7 +23,7 @@ import './../types.js'
  */
 
 /**
- * @param {import('./../store.js').OAuthProvider} _
+ * @param {OAuthProvider} _
  *
  * @returns {OAuthServiceAPI}
  */

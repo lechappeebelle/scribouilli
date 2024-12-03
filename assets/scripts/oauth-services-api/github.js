@@ -1,6 +1,6 @@
 import { gitHubApiBaseUrl } from './../config.js'
 
-import './../types.js'
+/** @import {OAuthServiceAPI} from '../types.js' */
 
 const GITHUB_JSON_ACCEPT_HEADER = 'application/vnd.github+json'
 

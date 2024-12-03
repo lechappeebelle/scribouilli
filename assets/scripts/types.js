@@ -22,6 +22,7 @@
  * @property {string} origin
  * @property {Promise<string>} publishedWebsiteURL
  * @property {string} publicRepositoryURL
+ * @property {Promise<void>} ready
  */
 
 /**
@@ -32,11 +33,18 @@
  */
 
 /**
+ * @typedef {Object} ScribouilliGitUser
+ * @property {string} login
+ * @property {string} [email]
+ * @property {string} [id]
+ */
+
+/**
  * @typedef {Object} OAuthServiceAPI
  * @property {(url: string, requestParams?: RequestInit) => Promise<Response>} callAPI
  * // https://isomorphic-git.org/docs/en/onAuth#oauth2-tokens
  * @property {() => {username: string, password: string}} getOauthUsernameAndPassword
- * @property {() => Promise<any>} getAuthenticatedUser
+ * @property {() => Promise<ScribouilliGitUser>} getAuthenticatedUser
  * @property {() => Promise<AuthenticatedUserEmails[]>} getUserEmails
  * @property {(scribouilliGitRepo: ScribouilliGitRepo, template: GitSiteTemplate) => Promise<any>} createDefaultRepository
  * @property {(scribouilliGitRepo: ScribouilliGitRepo) => Promise<boolean>} isRepositoryReady
@@ -99,3 +107,5 @@
  * @property {number} index
  * @property {boolean} inMenu
  */
+
+export default 'TS wants a module'

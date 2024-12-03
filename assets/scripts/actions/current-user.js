@@ -8,7 +8,7 @@ import store from '../store.js'
 import { logMessage } from '../utils.js'
 import { OAUTH_PROVIDER_STORAGE_KEY } from '../config.js'
 
-
+/** @import {ScribouilliGitUser} from '../types.js' */
 
 const logout = () => {
   forget(OAUTH_PROVIDER_STORAGE_KEY)
@@ -24,7 +24,7 @@ const logout = () => {
  * It returns the login of the user or the organization. If the user is not
  * logged in, it redirects to the authentication page.
  *
- * @returns {Promise<{login: string, email: string}>} A promise that resolves to the login of the
+ * @returns {Promise<ScribouilliGitUser>} A promise that resolves to the login of the
  * authenticated user or organization.
  *
  */

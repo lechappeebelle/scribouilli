@@ -3,10 +3,15 @@
 import './../types.js'
 import GitAgent from '../GitAgent.js'
 
+/** @import {OAuthServiceAPI, ScribouilliGitUser} from '../types.js' */
+
 /**
  * @implements {OAuthServiceAPI}
  */
 export default class GitLabAPI {
+  /** @type {ScribouilliGitUser | undefined} */
+  #authenticatedUser
+
   #gitAgentGetter
   /**
    * @param {string} accessToken
@@ -17,7 +22,6 @@ export default class GitLabAPI {
     /** @type {string | undefined} */
     this.accessToken = accessToken
     this.origin = origin
-    this.authenticatedUser = undefined
     this.#gitAgentGetter = gitAgent
   }
 
@@ -44,20 +48,20 @@ export default class GitLabAPI {
 
   /** @type {OAuthServiceAPI["getAuthenticatedUser"]} */
   getAuthenticatedUser() {
-    if (this.authenticatedUser) {
-      return Promise.resolve(this.authenticatedUser)
+    if (this.#authenticatedUser) {
+      return Promise.resolve(this.#authenticatedUser)
     }
 
     return this.callAPI(`${this.apiBaseUrl}/user`)
       .then(response => response.json())
-      .then(json => {
+      .then(({id, username, email}) => {
         const user = {
-          id: json.id,
-          login: json.username,
-          email: json.email,
+          id,
+          login: username,
+          email
         }
 
-        this.authenticatedUser = user
+        this.#authenticatedUser = user
 
         return Promise.resolve(user)
       })
@@ -65,6 +69,7 @@ export default class GitLabAPI {
 
   /** @type {OAuthServiceAPI["getUserEmails"]} */
   getUserEmails() {
+    // @ts-ignore
     return this.getAuthenticatedUser().then(({ email }) => {
       return Promise.resolve([
         {

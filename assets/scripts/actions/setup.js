@@ -151,21 +151,7 @@ export const createRepositoryForCurrentAccount = async (repoName, template) => {
 
   store.mutations.setGitAgent(gitAgent)
 
-
-  const scribouilliGitRepo = new ScribouilliGitRepo({
-    owner: owner,
-    repoName: escapedRepoName,
-    origin: origin,
-    publicRepositoryURL: makePublicRepositoryURL(
-      owner,
-      escapedRepoName,
-      origin,
-    ),
-    gitServiceProvider: getOAuthServiceAPI(),
-    gitAgent
-  })
-
-  store.mutations.setCurrentRepository(scribouilliGitRepo)
+  
 
 
   return (
@@ -177,7 +163,22 @@ export const createRepositoryForCurrentAccount = async (repoName, template) => {
         return waitRepoReady(scribouilliGitRepo)
       })
       .then(() => {
-        return setupLocalRepository()
+        const scribouilliGitRepo = new ScribouilliGitRepo({
+          owner: owner,
+          repoName: escapedRepoName,
+          origin: origin,
+          publicRepositoryURL: makePublicRepositoryURL(
+            owner,
+            escapedRepoName,
+            origin,
+          ),
+          gitServiceProvider: getOAuthServiceAPI(),
+          gitAgent
+        })
+      
+        store.mutations.setCurrentRepository(scribouilliGitRepo)
+
+        return scribouilliGitRepo.ready
       })
       .then(() => {
         return getOAuthServiceAPI().deploy(scribouilliGitRepo)

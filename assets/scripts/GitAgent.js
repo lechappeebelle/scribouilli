@@ -418,25 +418,27 @@ export default class GitAgent {
    *
    * @param {string} login
    * @param {string} email
-   * @returns {Promise<ReturnType<isomorphicGit["setConfig"]>>}
+   * @returns {Promise<any>}
    */
   async setAuthor(login, email) {
     if (!login || !email) {
       return
     }
 
-    await git.setConfig({
-      fs: this.#fs,
-      dir: this.#repoDirectory,
-      path: 'user.name',
-      value: login,
-    })
-    return await git.setConfig({
-      fs: this.#fs,
-      dir: this.#repoDirectory,
-      path: 'user.email',
-      value: email,
-    })
+    return Promise.all([
+      git.setConfig({
+        fs: this.#fs,
+        dir: this.#repoDirectory,
+        path: 'user.name',
+        value: login,
+      }),
+      git.setConfig({
+        fs: this.#fs,
+        dir: this.#repoDirectory,
+        path: 'user.email',
+        value: email,
+      })
+    ])
   }
 
   /**

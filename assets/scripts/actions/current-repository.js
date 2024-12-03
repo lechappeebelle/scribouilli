@@ -94,11 +94,7 @@ export const setCurrentRepositoryFromQuerystring = async querystring => {
 
   store.mutations.setCurrentRepository(scribouilliGitRepo)
 
-  const { login, email } = await fetchAuthenticatedUserLogin()
-
-  await gitAgent.pullOrCloneRepo()
-  await gitAgent.setAuthor(login, email)
-  await setBaseUrlInConfigIfNecessary()
+  
 
   getCurrentRepoArticles()
   getCurrentRepoPages()
@@ -152,7 +148,7 @@ export const setBaseUrlInConfigIfNecessary = async baseUrl => {
     }
   }
 
-  const config = await getRepoConfig()
+  const config = await getRepoConfig(store.state.gitAgent)
   /** @type {string} */
   const currentBaseURL = config.baseurl || ''
 
