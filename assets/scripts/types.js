@@ -38,7 +38,7 @@
  * @property {() => {username: string, password: string}} getOauthUsernameAndPassword
  * @property {() => Promise<any>} getAuthenticatedUser
  * @property {() => Promise<AuthenticatedUserEmails[]>} getUserEmails
- * @property {(scribouilliGitRepo: ScribouilliGitRepo, template: GitSiteTemplate) => Promise<any>} createDefaultRepository
+ * @property {(scribouilliGitRepo: ScribouilliGitRepo, template: GitSiteTemplate) => Promise<{remoteURL: string}>} createDefaultRepository
  * @property {(scribouilliGitRepo: ScribouilliGitRepo) => Promise<boolean>} isRepositoryReady
  * @property {() => Promise<GithubRepository[]>} getCurrentUserRepositories
  * @property {(scribouilliGitRepo: ScribouilliGitRepo) => Promise<any>} deploy

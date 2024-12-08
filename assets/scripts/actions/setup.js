@@ -154,13 +154,11 @@ export const createRepositoryForCurrentAccount = async (repoName, template) => {
   return (
     getOAuthServiceAPI()
       .createDefaultRepository(scribouilliGitRepo, template)
-      .then(({repoId, cloneUrl}) => {
-        console.log('cloneUrl', cloneUrl)
-        console.log('cloneUrl || `${origin}/${repoId}.git`', cloneUrl || `${origin}/${repoId}.git`)
+      .then(({remoteURL}) => {
 
         const gitAgent = new GitAgent({
-          repoId: repoId || makeRepoId(owner, escapedRepoName),
-          remoteURL: cloneUrl || `${origin}/${repoId}.git`,
+          repoId: makeRepoId(owner, escapedRepoName),
+          remoteURL: remoteURL,
           onMergeConflict : (/** @type {import("./../store.js").ResolutionOption[] | undefined} */ resolutionOptions) => {
             store.mutations.setConflict(resolutionOptions)
           },

@@ -71,7 +71,7 @@ export default class GitHubAPI {
       },
     )
     .then(r => r.json())
-    .then(({url: newRepoAPIURL, clone_url: cloneUrl, full_name: repoId}) => {
+    .then(({url: newRepoAPIURL, clone_url}) => {
       // Activate GitHub Pages
       return this.callAPI(`${newRepoAPIURL}/pages`, {
         method: 'POST',
@@ -116,7 +116,7 @@ export default class GitHubAPI {
           })
         })
       })
-      .then(() => { return {repoId, cloneUrl} })
+      .then(() => ({remoteURL: clone_url}))
 
     })
   }

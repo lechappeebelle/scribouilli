@@ -117,7 +117,9 @@ export default class GitLabAPI {
         topics: ['site-scribouilli'],
         visibility: 'public',
       }),
-    }).then(response => response.json())
+    })
+    .then(response => response.json())
+    .then(({http_url_to_repo}) => ({remoteURL: http_url_to_repo}))
   }
 
   /** @type {OAuthServiceAPI["deploy"]} */
