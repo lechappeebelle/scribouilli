@@ -155,6 +155,9 @@ export const createRepositoryForCurrentAccount = async (repoName, template) => {
     getOAuthServiceAPI()
       .createDefaultRepository(scribouilliGitRepo, template)
       .then(({repoId, cloneUrl}) => {
+        console.log('cloneUrl', cloneUrl)
+        console.log('cloneUrl || `${origin}/${repoId}.git`', cloneUrl || `${origin}/${repoId}.git`)
+
         const gitAgent = new GitAgent({
           repoId: repoId || makeRepoId(owner, escapedRepoName),
           remoteURL: cloneUrl || `${origin}/${repoId}.git`,
