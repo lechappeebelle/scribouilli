@@ -5,6 +5,7 @@ import { replaceComponent } from '../routeComponentLifeCycle'
 import store from '../store'
 import { setCurrentRepositoryFromQuerystring } from '../actions/current-repository.js'
 import AtelierPages from '../components/screens/AtelierPages.svelte'
+import { showArticles } from '../actions/article'
 
 /**
  *
@@ -17,13 +18,10 @@ const mapStateToProps = state => {
   }
 
   return {
-    pages: state.pages && state.pages.filter(p => p.path !== 'blog.md'),
+    pages: state.pages,
     buildStatus: state.buildStatus,
     currentRepository: state.currentRepository,
-    showArticles:
-      (state.pages &&
-        state.pages.find(p => p.path === 'blog.md') !== undefined) ||
-      (state.articles && state.articles.length > 0),
+    showArticles: showArticles(state),
     conflict: state.conflict,
   }
 }

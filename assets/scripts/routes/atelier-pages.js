@@ -11,6 +11,7 @@ import { setCurrentRepositoryFromQuerystring } from '../actions/current-reposito
 import PageContenu from '../components/screens/PageContenu.svelte'
 import { deletePage, createPage, updatePage } from './../actions/page'
 import { makeAtelierListPageURL } from './urls.js'
+import { showArticles } from '../actions/article'
 
 /**
  *
@@ -20,12 +21,13 @@ import { makeAtelierListPageURL } from './urls.js'
 const makeMapStateToProps = fileName => state => {
   // Display existing file
   if (fileName) {
-    const {gitAgent} = store.state
+    const { gitAgent } = store.state
 
-    if(!gitAgent){
+    if (!gitAgent) {
       throw new TypeError('gitAgent is undefined')
     }
 
+    /** @type {() => Promise<EditeurFile | undefined>} */
     const fileP = async function () {
       try {
         const content = await gitAgent.getFile(fileName)
@@ -38,7 +40,7 @@ const makeMapStateToProps = fileName => state => {
           title: data?.title,
           index: data?.order,
           previousTitle: data?.title,
-          inMenu: true,
+          blogIndex: data?.blog_index,
         }
       } catch (errorMessage) {
         //@ts-ignore
@@ -50,10 +52,7 @@ const makeMapStateToProps = fileName => state => {
       fileP: fileP(),
       contenus: state.articles,
       buildStatus: state.buildStatus,
-      showArticles:
-        (state.pages &&
-          state.pages.find(p => p.path === 'blog.md') !== undefined) ||
-        (state.articles && state.articles.length > 0),
+      showArticles: showArticles(state),
       currentRepository: state.currentRepository,
     }
   } else {
@@ -66,14 +65,12 @@ const makeMapStateToProps = fileName => state => {
         previousTitle: undefined,
         previousContent: undefined,
         inMenu: true,
+        blogIndex: false,
       }),
       makeFileNameFromTitle: makeFileNameFromTitle,
       contenus: state.pages,
       buildStatus: state.buildStatus,
-      showArticles:
-        (state.pages &&
-          state.pages.find(p => p.path === 'blog.md') !== undefined) ||
-        (state.articles && state.articles.length > 0),
+      showArticles: showArticles(state),
       currentRepository: state.currentRepository,
     }
   }
@@ -86,7 +83,9 @@ export default async ({ querystring }) => {
   await setCurrentRepositoryFromQuerystring(querystring)
 
   const state = store.state
-  const fileName = decodeURIComponent(new URLSearchParams(querystring).get('path') ?? '')
+  const fileName = decodeURIComponent(
+    new URLSearchParams(querystring).get('path') ?? '',
+  )
   const mapStateToProps = makeMapStateToProps(fileName)
 
   const currentRepository = store.state.currentRepository
@@ -122,6 +121,7 @@ export default async ({ querystring }) => {
         previousTitle,
         previousContent,
         index,
+        blogIndex,
       },
     }) => {
       const hasContentChanged = content !== previousContent
@@ -143,7 +143,7 @@ export default async ({ querystring }) => {
           .catch(msg => handleErrors(msg))
       }
 
-      updatePage(fileName, title, content, index)
+      updatePage(fileName, title, content, index, blogIndex)
         .then(() => {
           state.buildStatus.setBuildingAndCheckStatusLater()
           page(makeAtelierListPageURL(currentRepository))

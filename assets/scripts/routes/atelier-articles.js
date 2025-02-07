@@ -10,7 +10,12 @@ import { svelteTarget } from '../config'
 import { replaceComponent } from '../routeComponentLifeCycle'
 import ArticleContenu from '../components/screens/ArticleContenu.svelte'
 import { setCurrentRepositoryFromQuerystring } from '../actions/current-repository.js'
-import { deleteArticle, createArticle, updateArticle } from '../actions/article'
+import {
+  deleteArticle,
+  createArticle,
+  updateArticle,
+  showArticles,
+} from '../actions/article'
 import { makeAtelierListArticlesURL } from './atelier-list-articles.js'
 
 /**
@@ -20,9 +25,9 @@ import { makeAtelierListArticlesURL } from './atelier-list-articles.js'
  */
 const makeMapStateToProps = fileName => state => {
   if (fileName) {
-    const {gitAgent} = store.state
+    const { gitAgent } = store.state
 
-    if(!gitAgent){
+    if (!gitAgent) {
       throw new TypeError('gitAgent is undefined')
     }
 
@@ -46,10 +51,7 @@ const makeMapStateToProps = fileName => state => {
       fileP,
       contenus: state.articles,
       buildStatus: state.buildStatus,
-      showArticles:
-        (state.pages &&
-          state.pages.find(p => p.path === 'blog.md') !== undefined) ||
-        (state.articles && state.articles.length > 0),
+      showArticles: showArticles(state),
       currentRepository: state.currentRepository,
     }
   } else {
@@ -61,13 +63,11 @@ const makeMapStateToProps = fileName => state => {
         previousContent: undefined,
         title: '',
         previousTitle: undefined,
+        blogIndex: false,
       }),
       contenus: state.articles,
       buildStatus: state.buildStatus,
-      showArticles:
-        (state.pages &&
-          state.pages.find(p => p.path === 'blog.md') !== undefined) ||
-        (state.articles && state.articles.length > 0),
+      showArticles: showArticles(state),
       currentRepository: state.currentRepository,
     }
   }
@@ -86,7 +86,9 @@ export default async ({ querystring }) => {
   }
 
   const state = store.state
-  const fileName = decodeURIComponent(new URLSearchParams(querystring).get('path') ?? '')
+  const fileName = decodeURIComponent(
+    new URLSearchParams(querystring).get('path') ?? '',
+  )
   const mapStateToProps = makeMapStateToProps(fileName)
 
   const articleContenu = new ArticleContenu({

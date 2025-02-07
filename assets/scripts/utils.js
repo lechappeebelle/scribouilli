@@ -79,16 +79,24 @@ export function makeArticleFileName(title, date) {
  * @param {string} title
  * @param {number?} index
  * @param {boolean} inMenu
+ * @param {boolean} [blogIndex]
  * @returns {string}
  */
-export function makePageFrontMatter(title, index = 1, inMenu = true) {
+export function makePageFrontMatter(
+  title,
+  index = 1,
+  inMenu = true,
+  blogIndex = undefined,
+) {
   return [
     '---',
     'title: ' + '"' + title.replace(/"/g, '\\"') + '"',
     'order: ' + index,
     'in_menu: ' + inMenu,
-    '---',
-  ].join('\n')
+  ]
+    .concat(blogIndex ? ['blog_index: true'] : [])
+    .concat(['---'])
+    .join('\n')
 }
 
 /**

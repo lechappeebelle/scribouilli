@@ -7,14 +7,38 @@ import { deleteFileAndPushChanges, writeFileAndPushChanges } from './file.js'
 import { keepMarkdownAndHTMLFiles } from './page.js'
 import { makeArticleFileName, makeArticleFrontMatter } from './../utils.js'
 
+/** Return whether the blog is enabled or not and whether the "Articles" section
+ * should be available.
+ *
+ * @param {import("../store.js").ScribouilliState} state
+ */
+export function showArticles(state) {
+  const index = blogIndex(state)
+  return index !== undefined
+}
+
+/**
+ * Return the file path of the blog index if it is enabled.
+ *
+ * It is true iff there is a file in the root of the project that has `blogIndex: true`
+ * in its front-matter.
+ *
+ * @param {import("../store.js").ScribouilliState} state
+ * @returns {string | undefined}
+ */
+export function blogIndex(state) {
+  const pages = state.pages ?? []
+  return pages.find(p => p.blogIndex ?? false)?.path
+}
+
 /**
  *
  * @returns {Promise<Article[]>}
  */
 export async function getArticlesList() {
-  const {gitAgent} = store.state
+  const { gitAgent } = store.state
 
-  if(!gitAgent){
+  if (!gitAgent) {
     throw new TypeError('gitAgent is undefined')
   }
 
@@ -45,7 +69,6 @@ export async function getArticlesList() {
  */
 export const deleteArticle = fileName => {
   const { state } = store
-  
 
   store.mutations.setArticles(
     (state.articles ?? []).filter(article => {
@@ -98,9 +121,9 @@ export const createArticle = (title, content) => {
  * @returns {ReturnType<typeof writeFileAndPushChanges>}
  */
 export const updateArticle = async (fileName, title, content) => {
-  const {gitAgent} = store.state
+  const { gitAgent } = store.state
 
-  if(!gitAgent){
+  if (!gitAgent) {
     throw new TypeError('gitAgent is undefined')
   }
 

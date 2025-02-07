@@ -4,6 +4,7 @@
  * @property {string} title
  * @property {string} [content]
  * @property {boolean} [inMenu]
+ * @property {boolean} [blogIndex] Is this page the index of the blog section? Defaults to false.
  * @property {number} index
  */
 
@@ -89,6 +90,7 @@
  * @property {string} title
  * @property {number} index
  * @property {string | undefined} previousTitle
+ * @property {boolean} blogIndex
  */
 
 /**
@@ -98,4 +100,5 @@
  * @property {string} content
  * @property {number} index
  * @property {boolean} inMenu
+ * @property {boolean} blogIndex
  */
