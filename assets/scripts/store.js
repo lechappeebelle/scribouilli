@@ -2,21 +2,20 @@
 
 import Store from 'baredux'
 /**
- * Un store baredux a pour vocation de refléter notamment le modèle mental de la 
+ * Un store baredux a pour vocation de refléter notamment le modèle mental de la
  * personne face à Scribouilli. Le store stocke donc principalement des données (et parfois des singletons)
  * Il stocke aussi parfois des promesses pour permettre d'afficher des loaders
- * 
+ *
  * Dans un store Baredux, les mutations sont synchrones
  * S'il manque des informations, attendre la résolution de la promesse avant d'appeler une mutation
  * (à moins que la valeur soit délibérément une promesse)
- * 
+ *
  */
 // DO NOT import x from 'remember' // do it in an action instead
 // DO NOT import x from './actions/*.js' // you're making an action, so add an action instead
 
 import './types.js'
 import GitAgent from './GitAgent.js'
-
 
 /** @typedef { {message: string, resolution: (...args: any[]) => Promise<any>} } ResolutionOption */
 
@@ -102,7 +101,7 @@ const mutations = {
    * @param {ScribouilliState} state
    * @param {ScribouilliState['gitAgent']} gitAgent
    */
-  setGitAgent(state, gitAgent){
+  setGitAgent(state, gitAgent) {
     state.gitAgent = gitAgent
   },
   /**
@@ -143,10 +142,10 @@ const mutations = {
   setArticles(state, articles) {
     state.articles = articles?.sort((pageA, pageB) => {
       if (pageA.path < pageB.path) {
-        return -1
+        return 1
       }
       if (pageA.path > pageB.path) {
-        return 1
+        return -1
       }
 
       // pageA.path === pageB.path
