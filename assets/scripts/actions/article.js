@@ -7,25 +7,12 @@ import { deleteFileAndPushChanges, writeFileAndPushChanges } from './file.js'
 import { keepMarkdownAndHTMLFiles } from './page.js'
 import { makeArticleFileName, makeArticleFrontMatter } from './../utils.js'
 
-/** Helper to know whether to show articles in the menu or not.
- *
- * Articles are shown if the blog is enabled and there are some articles.
- *
- * QUESTION: The documentation above is what I assumed by reading the code but
- * it seems weird to me that the articles will not be shown in the menu if there
- * are none (you wouldn't be able to create a new one then). So either fix the docs
- * or the code.
+/** Return whether the blog is enabled or not and whether the "Articles" section
+ * should be available.
  *
  * @param {import("../store.js").ScribouilliState} state
  */
-export const showArticles = state =>
-  hasBlog(state) && state.articles && state.articles.length > 0
-
-/** Return whether the blog is enabled or not.
- *
- * @param {import("../store.js").ScribouilliState} state
- */
-function hasBlog(state) {
+export function showArticles(state) {
   const index = blogIndex(state)
   return index !== undefined
 }
