@@ -7,6 +7,7 @@ import ResolutionDesynchronisation from '../components/screens/ResolutionDesynch
 import { svelteTarget } from '../config.js'
 import { replaceComponent } from '../routeComponentLifeCycle.js'
 import { setCurrentRepositoryFromQuerystring } from '../actions/current-repository.js'
+import { showArticles } from '../actions/article.js'
 
 /**
  *
@@ -14,14 +15,12 @@ import { setCurrentRepositoryFromQuerystring } from '../actions/current-reposito
  * @returns
  */
 const mapStateToProps = state => {
-  const { conflict, currentRepository, buildStatus, pages, articles } = state
+  const { conflict, currentRepository, buildStatus } = state
 
   return {
     conflict,
     currentRepository,
-    showArticles:
-      (pages && pages.find(p => p.path === 'blog.md') !== undefined) ||
-      (articles && articles.length > 0),
+    showArticles: showArticles(state),
     buildStatus,
   }
 }

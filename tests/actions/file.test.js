@@ -6,7 +6,7 @@ import {
   deleteFileAndCommit,
   deleteFileAndPushChanges,
 } from './../../assets/scripts/actions/file.js'
-import gitAgent from './../../assets/scripts/gitAgent.js'
+import gitAgent from './../../assets/scripts/GitAgent.js'
 import store from './../../assets/scripts/store.js'
 
 throw 'Test désactivé parce que je ne sais pas stub gitAgent comme propriété de store.state'
@@ -59,15 +59,15 @@ describe('actions/file.js', () => {
         .then(() => {
           expect(gitAgent.writeFile).to.have.been.calledWith(
             store.state.currentRepository,
-            'test.js', 
-            'Curiouser and curiouser!'
+            'test.js',
+            'Curiouser and curiouser!',
           )
           expect(gitAgent.commit).to.have.been.calledWith(
             store.state.currentRepository,
-            `Modification du fichier test.js`
+            `Modification du fichier test.js`,
           )
           expect(gitAgent.safePush).to.have.been.calledWith(
-            store.state.currentRepository
+            store.state.currentRepository,
           )
           done()
         })
@@ -109,7 +109,7 @@ describe('actions/file.js', () => {
       deleteFileAndPushChanges('test.js')
         .then(() => {
           expect(gitAgent.safePush).to.have.been.calledWith(
-            store.state.currentRepository
+            store.state.currentRepository,
           )
           done()
         })

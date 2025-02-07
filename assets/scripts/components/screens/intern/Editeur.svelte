@@ -52,6 +52,7 @@
     // @ts-ignore
     index: store.state.pages.length + 1,
     previousTitle: undefined,
+    blogIndex: false
   }
 
   fileP.then(_file => {
@@ -94,6 +95,7 @@
         title: file.title.trim(),
         index: file.index,
         previousTitle: file.previousTitle,
+        blogIndex: file.blogIndex,
       })
     }
   }

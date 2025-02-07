@@ -12,16 +12,14 @@ import {
 import { handleErrors } from '../utils'
 import Settings from '../components/screens/Settings.svelte'
 import { writeFileAndCommit, deleteFileAndCommit } from '../actions/file'
-
+import { blogIndex, showArticles } from '../actions/article'
 
 const blogMdContent = `---
-layout: default
+layout: page
 title: Articles
 permalink: /articles/
+blog_index: true
 ---
-<h1>
-  Articles
-</h1>
 <aside>
   S'abonner via le <a href="{{ '/feed.xml' | relative_url }}">flux RSS</a>
   (<a href="https://flus.fr/carnet/a-quoi-servent-les-flux.html">c'est quoi ?</a>)
@@ -45,7 +43,7 @@ permalink: /articles/
  * @returns
  */
 function mapStateToProps(state) {
-  const blogFile = state.pages && state.pages.find(p => p.path === 'blog.md')
+  const blogFile = blogIndex(state)
   const currentRepository = store.state.currentRepository
 
   if (!currentRepository) {
@@ -57,8 +55,7 @@ function mapStateToProps(state) {
     theme: state.theme,
     deleteRepositoryUrl: `${currentRepository.publicRepositoryURL}/settings#danger-zone`,
     blogEnabled: blogFile !== undefined,
-    showArticles:
-      blogFile !== undefined || (state.articles && state.articles?.length > 0),
+    showArticles: showArticles(state),
     currentRepository: state.currentRepository,
   }
 }
@@ -69,9 +66,9 @@ function mapStateToProps(state) {
 export default async ({ querystring }) => {
   await setCurrentRepositoryFromQuerystring(querystring)
 
-  const {gitAgent} = store.state
+  const { gitAgent } = store.state
 
-  if(!gitAgent){
+  if (!gitAgent) {
     throw new TypeError('gitAgent is undefined')
   }
 

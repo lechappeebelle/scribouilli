@@ -20,9 +20,9 @@ export function keepMarkdownAndHTMLFiles(filename) {
  * @returns {Promise<Page[]>}
  */
 export async function getPagesList() {
-  const {gitAgent} = store.state
+  const { gitAgent } = store.state
 
-  if(!gitAgent){
+  if (!gitAgent) {
     throw new TypeError('gitAgent is undefined')
   }
 
@@ -40,6 +40,7 @@ export async function getPagesList() {
         index: data?.order,
         // no `in_menu` proprerty is interpreted as the page should be in the menu
         inMenu: data?.in_menu === true || data?.in_menu === undefined,
+        blogIndex: data?.blog_index === true,
         path: filename,
         content: markdownContent,
       }
@@ -103,13 +104,20 @@ export const createPage = (content, title, index) => {
  * @param {string} content
  * @param {string} title
  * @param {number} index
+ * @param {boolean} blogIndex
  *
  * @returns {ReturnType<typeof writeFileAndPushChanges>}
  */
-export const updatePage = async (fileName, title, content, index) => {
-  const {gitAgent} = store.state
+export const updatePage = async (
+  fileName,
+  title,
+  content,
+  index,
+  blogIndex,
+) => {
+  const { gitAgent } = store.state
 
-  if(!gitAgent){
+  if (!gitAgent) {
     throw new TypeError('gitAgent is undefined')
   }
   let targetFileName = fileName
@@ -125,7 +133,7 @@ export const updatePage = async (fileName, title, content, index) => {
   }
 
   const finalContent = `${
-    title ? makePageFrontMatter(title, index) + '\n' : ''
+    title ? makePageFrontMatter(title, index, undefined, blogIndex) + '\n' : ''
   }${content} `
 
   return writeFileAndPushChanges(

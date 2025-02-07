@@ -1,6 +1,6 @@
 {
-  "include": ["declarations.d.ts", "assets/scripts/**/*.js", "tests/**/*.js"],
-  "exclude": ["node_modules"],
+  "include": ["declarations.d.ts", "assets/scripts/**/*.js"],
+  "exclude": ["node_modules", "tests/**/*.js"],
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,

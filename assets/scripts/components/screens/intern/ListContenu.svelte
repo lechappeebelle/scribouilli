@@ -61,6 +61,7 @@
                   page.title,
                   page.index,
                   page.inMenu,
+                  page.blogIndex ? true : undefined,
                 ) + '\n'
               : ''
           }${page.content}`,
