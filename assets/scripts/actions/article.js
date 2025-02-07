@@ -28,7 +28,10 @@ export function showArticles(state) {
  */
 export function blogIndex(state) {
   const pages = state.pages ?? []
-  return pages.find(p => p.blogIndex ?? false)?.path
+  const index = pages.find(p => p.blogIndex ?? false)?.path
+  // In previous versions we assumed that the blog index was always
+  // named "blog.md", so keep that as a fallback for older websites.
+  return index ?? pages.find(p => p.path === 'blog.md')?.path
 }
 
 /**
