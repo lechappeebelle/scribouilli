@@ -9,7 +9,7 @@ import ScribouilliGitRepo, {
   makePublicRepositoryURL,
 } from './../scribouilliGitRepo.js'
 import GitAgent from '../GitAgent.js'
-import { handleErrors } from './../utils.js'
+import { handleErrors, logMessage } from './../utils.js'
 import { fetchAuthenticatedUserLogin } from './current-user.js'
 import makeBuildStatus from './../buildStatus.js'
 import { writeFileAndCommit, writeFileAndPushChanges } from './file.js'
@@ -188,21 +188,32 @@ export async function installPluginIfNecessary(plugin, version) {
   config.plugins.push(plugin)
   const newConfig = yaml.dump(config)
 
-  const { gitAgent } = store.state
-  if (!gitAgent) {
-    throw new TypeError('gitAgent is undefined')
+  try {
+    const { gitAgent } = store.state
+    if (!gitAgent) {
+      throw new TypeError('gitAgent is undefined')
+    }
+
+    const gemFile = await gitAgent.getFile('Gemfile')
+    const SECTION_START = 'group :jekyll_plugins do\n'
+    const pluginSectionStart =
+      gemFile.indexOf(SECTION_START) + SECTION_START.length
+    const newGemfile =
+      gemFile.slice(0, pluginSectionStart) +
+      `  gem "${plugin}", "~> ${version}"\n\n` +
+      gemFile.slice(pluginSectionStart)
+
+    await writeFileAndCommit('Gemfile', newGemfile, 'Ajout de la gem ' + plugin)
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'erreur inconnue'
+    logMessage(
+      "Erreur lors de la mise à jour du Gemfile, il n'existe probablement pas: " +
+        message,
+      'installPluginIfNecessary',
+      'warn',
+    )
   }
 
-  const gemFile = await gitAgent.getFile('Gemfile')
-  const SECTION_START = 'group :jekyll_plugins do\n'
-  const pluginSectionStart =
-    gemFile.indexOf(SECTION_START) + SECTION_START.length
-  const newGemfile =
-    gemFile.slice(0, pluginSectionStart) +
-    `  gem "${plugin}", "~> ${version}"\n\n` +
-    gemFile.slice(pluginSectionStart)
-
-  await writeFileAndCommit('Gemfile', newGemfile, 'Ajout de la gem ' + plugin)
   await writeFileAndPushChanges(
     '_config.yml',
     newConfig,
