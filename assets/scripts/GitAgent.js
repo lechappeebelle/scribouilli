@@ -3,11 +3,11 @@
 /**
  * Ce fichier gère les interactions avec git (contenu, commits, branches, remotes, pull/pull, etc.)
  * et aussi le contenu sous-jacent et le filesystem
- * 
+ *
  * Normallement, aucun autre fichier ne devrait communiquer avec le fs directement
- * 
+ *
  * Ce fichier aspire à être neutre par rapport à Scribouilli (pour pouvoir être utilisé par Comptanar, par exemple)
- * Faire attention à ce qui y est importé 
+ * Faire attention à ce qui y est importé
  * et aux méthodes ajoutées
  */
 
@@ -17,7 +17,6 @@ import http from 'isomorphic-git/http/web/index.js'
 
 import './types.js'
 
-
 const DEFAULT_CORS_PROXY_URL = 'https://cors.isomorphic-git.org'
 
 /** @typedef {import('isomorphic-git')} isomorphicGit */
@@ -25,15 +24,15 @@ const DEFAULT_CORS_PROXY_URL = 'https://cors.isomorphic-git.org'
 
 export default class GitAgent {
   #fs
-  #remoteURL;
-  #repoId;
-  #corsProxyURL;
-  #onAuth;
-  #onMergeConflict;
+  #remoteURL
+  #repoId
+  #corsProxyURL
+  #onAuth
+  #onMergeConflict
 
   // computed
-  #origin;
-  #hostname;
+  #origin
+  #hostname
   #repoDirectory
 
   /**
@@ -49,7 +48,7 @@ export default class GitAgent {
     remoteURL,
     corsProxyURL = DEFAULT_CORS_PROXY_URL,
     auth,
-    onMergeConflict
+    onMergeConflict,
   }) {
     this.#fs = new FS('scribouilli')
 
@@ -66,7 +65,6 @@ export default class GitAgent {
     this.#repoDirectory = `/${this.#hostname}/${this.#repoId}`
   }
 
-  
   /**
    *
    * @param {string} filename
@@ -75,7 +73,7 @@ export default class GitAgent {
   #path(filename) {
     return `${this.#repoDirectory}/${filename}`
   }
-  
+
   /**
    * @summary helper to create ref strings for remotes
    *
@@ -133,8 +131,6 @@ export default class GitAgent {
     })
   }
 
-
-
   /**
    *
    * @returns {ReturnType<isomorphicGit["listRemotes"]>}
@@ -174,7 +170,7 @@ export default class GitAgent {
       dir: this.#repoDirectory,
       corsProxy: this.#corsProxyURL,
       // See https://isomorphic-git.org/docs/en/onAuth#oauth2-tokens
-      onAuth: this.#onAuth
+      onAuth: this.#onAuth,
     })
   }
 
@@ -222,7 +218,7 @@ export default class GitAgent {
       force: true,
       corsProxy: this.#corsProxyURL,
       // See https://isomorphic-git.org/docs/en/onAuth#oauth2-tokens
-      onAuth: this.#onAuth
+      onAuth: this.#onAuth,
     })
   }
 
@@ -244,7 +240,7 @@ export default class GitAgent {
   /**
    *
    * @param {string} [ref]
-   * @returns {Promise<import('isomorphic-git').CommitObject>}
+   * @returns {Promise<import('isomorphic-git').CommitObject & { oid: string }>}
    */
   currentCommit(ref = undefined) {
     return git
@@ -254,7 +250,7 @@ export default class GitAgent {
         ref,
         depth: 1,
       })
-      .then(commits => commits[0].commit)
+      .then(commits => ({ oid: commits[0].oid, ...commits[0].commit }))
   }
 
   /**
@@ -388,7 +384,6 @@ export default class GitAgent {
    * @return {Promise<any>}
    */
   async pullOrCloneRepo() {
-
     let dirExists = true
     try {
       const stat = await this.#fs.promises.stat(this.#repoDirectory)
@@ -446,10 +441,9 @@ export default class GitAgent {
    * @returns {Promise<string>}
    */
   async getFile(fileName) {
-    const content = await this.#fs.promises.readFile(
-      this.#path(fileName),
-      { encoding: 'utf8' },
-    )
+    const content = await this.#fs.promises.readFile(this.#path(fileName), {
+      encoding: 'utf8',
+    })
     if (content instanceof Uint8Array) {
       return content.toString()
     }
