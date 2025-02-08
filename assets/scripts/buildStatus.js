@@ -86,7 +86,9 @@ const ERROR_DELAY = 60
  */
 async function getBuildStatus(currentRepository, gitAgent) {
   const publishedWebsiteURL = await currentRepository.publishedWebsiteURL
-  const html = await fetch(publishedWebsiteURL).then(r => r.text())
+  const html = await fetch(publishedWebsiteURL, {
+    cache: 'no-store',
+  }).then(r => r.text())
   const dom = new DOMParser().parseFromString(html, 'text/html')
 
   const lastCommit = await gitAgent.currentCommit()
