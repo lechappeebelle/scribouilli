@@ -119,5 +119,8 @@ async function getBuildStatus(currentRepository, gitAgent) {
     }
   }
 
-  throw new Error('Git hash comment not found')
+  // If there is no comment at all, we know that the website was built using an
+  // old Scribouilli version: no changes were made since then, so we can assume
+  // that the last build was successfull.
+  return 'success'
 }
