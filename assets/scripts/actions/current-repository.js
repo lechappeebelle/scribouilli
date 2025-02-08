@@ -12,13 +12,11 @@ import GitAgent from '../GitAgent.js'
 import { handleErrors } from './../utils.js'
 import { fetchAuthenticatedUserLogin } from './current-user.js'
 import makeBuildStatus from './../buildStatus.js'
-import { writeFileAndPushChanges } from './file.js'
+import { writeFileAndCommit, writeFileAndPushChanges } from './file.js'
 import { getPagesList } from './page.js'
 import { getArticlesList } from './article.js'
 import { getOAuthServiceAPI } from '../oauth-services-api/index.js'
 import { CUSTOM_CSS_PATH } from '../config.js'
-
-/** @typedef {import('isomorphic-git')} isomorphicGit */
 
 export const getCurrentRepoPages = () => {
   return getPagesList().then(store.mutations.setPages).catch(handleErrors)
@@ -82,10 +80,10 @@ export const setCurrentRepositoryFromQuerystring = async querystring => {
   const gitAgent = new GitAgent({
     repoId,
     remoteURL: `${origin}/${repoId}.git`,
-    onMergeConflict : resolutionOptions => {
+    onMergeConflict: resolutionOptions => {
       store.mutations.setConflict(resolutionOptions)
     },
-    auth: getOAuthServiceAPI().getOauthUsernameAndPassword()
+    auth: getOAuthServiceAPI().getOauthUsernameAndPassword(),
   })
 
   store.mutations.setGitAgent(gitAgent)
@@ -95,18 +93,20 @@ export const setCurrentRepositoryFromQuerystring = async querystring => {
   await gitAgent.pullOrCloneRepo()
   await gitAgent.setAuthor(login, email)
   await setBaseUrlInConfigIfNecessary()
+  await installPluginIfNecessary('jekyll-git-hash', '0.1.1')
 
   getCurrentRepoArticles()
   getCurrentRepoPages()
 
-  setBuildStatus(scribouilliGitRepo)
+  setBuildStatus(scribouilliGitRepo, gitAgent)
 }
 
 /**
  * @param {ScribouilliGitRepo} scribouilliGitRepo
+ * @param {GitAgent} gitAgent
  */
-export const setBuildStatus = scribouilliGitRepo => {
-  store.mutations.setBuildStatus(makeBuildStatus(scribouilliGitRepo))
+export const setBuildStatus = (scribouilliGitRepo, gitAgent) => {
+  store.mutations.setBuildStatus(makeBuildStatus(scribouilliGitRepo, gitAgent))
   /*
   Appel sans vérification,
   On suppose qu'au chargement initial,
@@ -174,10 +174,48 @@ export const setBaseUrlInConfigIfNecessary = async baseUrl => {
 }
 
 /**
+ * @param {string} plugin
+ * @param {string} version
+ * @returns {Promise<boolean>} true if the plugin was installed, false if it was already here.
+ */
+export async function installPluginIfNecessary(plugin, version) {
+  /** @type {{ plugins: string[] }} */
+  const config = await getCurrentRepoConfig()
+  if (config.plugins.includes(plugin)) {
+    return false
+  }
+
+  config.plugins.push(plugin)
+  const newConfig = yaml.dump(config)
+
+  const { gitAgent } = store.state
+  if (!gitAgent) {
+    throw new TypeError('gitAgent is undefined')
+  }
+
+  const gemFile = await gitAgent.getFile('Gemfile')
+  const SECTION_START = 'group :jekyll_plugins do\n'
+  const pluginSectionStart =
+    gemFile.indexOf(SECTION_START) + SECTION_START.length
+  const newGemfile =
+    gemFile.slice(0, pluginSectionStart) +
+    `  gem "${plugin}", "~> ${version}"\n\n` +
+    gemFile.slice(pluginSectionStart)
+
+  await writeFileAndCommit('Gemfile', newGemfile, 'Ajout de la gem ' + plugin)
+  await writeFileAndPushChanges(
+    '_config.yml',
+    newConfig,
+    'Ajout du plugin ' + plugin,
+  )
+  return true
+}
+
+/**
  * @returns {Promise<any>}
  */
-export const getCurrentRepoConfig = () => {
-  const {currentRepository, gitAgent} = store.state
+const getCurrentRepoConfig = () => {
+  const { currentRepository, gitAgent } = store.state
 
   if (!currentRepository) {
     throw new TypeError('currentRepository is undefined')

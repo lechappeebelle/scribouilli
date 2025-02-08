@@ -1,7 +1,6 @@
 //@ts-check
 
-import { getOAuthServiceAPI } from './oauth-services-api/index.js'
-import { logMessage } from './utils.js'
+import GitAgent from './GitAgent.js'
 
 /**
  * @typedef {"in_progress" | "success" | "error"} BuildStatus
@@ -10,9 +9,9 @@ import { logMessage } from './utils.js'
 /**
  *
  * @param {ScribouilliGitRepo} scribouilliGitRepo
- * @returns
+ * @param {GitAgent} gitAgent
  */
-export default function (scribouilliGitRepo) {
+export default function (scribouilliGitRepo, gitAgent) {
   /** @type {BuildStatus} */
   let repoStatus = 'in_progress'
   /** @type {(status: BuildStatus) => any} */
@@ -42,37 +41,23 @@ export default function (scribouilliGitRepo) {
       reaction = callback
     },
     checkStatus() {
-      return (
-        getOAuthServiceAPI()
-          .getPagesWebsiteDeploymentStatus(scribouilliGitRepo)
-          // @ts-ignore
-          .then(status => {
-            logMessage(
-              `GitHub deployment's status is ${status}`,
-              'buildStatus.checkStatus',
-            )
+      return getBuildStatus(scribouilliGitRepo, gitAgent)
+        .then(status => {
+          repoStatus = status
+          if (reaction) {
+            reaction(repoStatus)
+          }
 
-            if (['in_progress', 'success', 'error'].includes(status)) {
-              repoStatus = status
-            } else {
-              repoStatus = 'in_progress'
-            }
-
-            if (reaction) {
-              reaction(repoStatus)
-            }
-
-            if (repoStatus === 'in_progress') {
-              scheduleCheck()
-            }
-          })
-          .catch(() => {
-            repoStatus = 'error'
-            if (reaction) {
-              reaction(repoStatus)
-            }
-          })
-      )
+          if (repoStatus === 'in_progress') {
+            scheduleCheck()
+          }
+        })
+        .catch(() => {
+          repoStatus = 'error'
+          if (reaction) {
+            reaction(repoStatus)
+          }
+        })
     },
     setBuildingAndCheckStatusLater(t = 30000) {
       repoStatus = 'in_progress'
@@ -85,4 +70,54 @@ export default function (scribouilliGitRepo) {
 
   buildStatusObject.checkStatus()
   return buildStatusObject
+}
+
+/** Delay (in seconds) after which a non-updated website is assumed to have failed to build. */
+const ERROR_DELAY = 60
+
+/**
+ * mimoza includes the hash of the latest built commit in a comment in the HTML of each page.
+ * We use that to know which version is currently online, and whether the last build succeeded
+ * or not.
+ *
+ * @param {ScribouilliGitRepo} currentRepository
+ * @param {GitAgent} gitAgent
+ * @returns {Promise<BuildStatus>}
+ */
+async function getBuildStatus(currentRepository, gitAgent) {
+  const publishedWebsiteURL = await currentRepository.publishedWebsiteURL
+  const html = await fetch(publishedWebsiteURL, {
+    cache: 'no-store',
+  }).then(r => r.text())
+  const dom = new DOMParser().parseFromString(html, 'text/html')
+
+  const lastCommit = await gitAgent.currentCommit()
+
+  for (const node of dom.documentElement.childNodes) {
+    if (node.nodeType === dom.COMMENT_NODE) {
+      const comment = (node.textContent ?? '').trim()
+      if (comment.startsWith('scribouilli-git-hash')) {
+        const hash = comment.split(': ').at(1) ?? 'unknown'
+
+        if (hash === 'unknown') {
+          throw new Error('Unknown git hash')
+        }
+
+        console.log(lastCommit)
+        if (hash === lastCommit.oid.slice(0, 7)) {
+          return 'success'
+        } else {
+          const currentTime = new Date().getTime() / 1000
+          const deltaTime = currentTime - lastCommit.committer.timestamp
+          if (deltaTime > ERROR_DELAY) {
+            return 'error'
+          } else {
+            return 'in_progress'
+          }
+        }
+      }
+    }
+  }
+
+  throw new Error('Git hash comment not found')
 }
