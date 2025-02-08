@@ -203,13 +203,14 @@
   }
 
   header {
-    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 5em;
     width: 26em;
-    justify-content: space-between;
-    margin: auto;
-    margin-bottom: 1.5rem;
+    margin: 3rem auto;
     padding: 0;
+    border: none;
 
     & > * {
       flex: 0 1 auto;
