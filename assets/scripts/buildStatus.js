@@ -84,13 +84,22 @@ async function getBuildStatus(currentRepository, gitAgent) {
   const publishedWebsiteURL = await currentRepository.publishedWebsiteURL
   let html
   try {
-    html = await fetch(publishedWebsiteURL, {
-      redirect: 'error',
+    const req = await fetch(publishedWebsiteURL, {
       cache: 'no-store',
-    }).then(r => r.text())
+    })
+
+    const url = new URL(req.url)
+    if (req.redirected && url.hostname.endsWith('projects.gitlab.io')) {
+      throw new Error(
+        'Redirection vers la page de login GitLab: le site est privé',
+      )
+    }
+
+    html = await req.text()
   } catch {
     // If the website is a "private" GitLab repo, we will receive a redirection to
-    // GitLab to login.
+    // GitLab to login, which will fail because of CORS. In case it doesn't fail,
+    // the Error we throw above should still catch this redirection.
     return 'not_public'
   }
 
