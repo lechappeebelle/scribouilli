@@ -20,7 +20,7 @@
   if (buildStatus) {
     // @ts-ignore
     buildStatus.subscribe(s => {
-      if (s) {
+      if (s) { 
         status = s
       }
     })
