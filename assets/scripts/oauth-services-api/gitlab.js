@@ -21,7 +21,7 @@ export default class GitLabAPI {
     this.#gitAgentGetter = gitAgent
   }
 
-  get gitAgent(){
+  get gitAgent() {
     return this.#gitAgentGetter()
   }
 
@@ -116,10 +116,11 @@ export default class GitLabAPI {
         description: 'Mon site Scribouilli',
         topics: ['site-scribouilli'],
         visibility: 'public',
+        pages_access_level: 'public',
       }),
     })
-    .then(response => response.json())
-    .then(({http_url_to_repo}) => ({remoteURL: http_url_to_repo}))
+      .then(response => response.json())
+      .then(({ http_url_to_repo }) => ({ remoteURL: http_url_to_repo }))
   }
 
   /** @type {OAuthServiceAPI["deploy"]} */
