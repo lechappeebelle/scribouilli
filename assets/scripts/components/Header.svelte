@@ -1,5 +1,5 @@
 <script>
-  /** @type {any} */
+  /** @type {{ status: BuildStatus }} */
   export let buildStatus
 
   /** @typedef {import("./../store.js").ScribouilliState} ScribouilliState */
@@ -28,7 +28,7 @@
 
   /** @type {boolean} */
   let notPublic
-  $: notPublic = buildStatus === 'not_public'
+  $: notPublic = buildStatus.status === 'not_public'
 
   $: buildStatusClass = buildStatus ? `build-${status}` : undefined
 
