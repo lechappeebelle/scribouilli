@@ -15,14 +15,14 @@
 
     <ul class="descriptions">
       <li>
-        <strong>Gitlab.com</strong> qui est un hébergeur professionnel
-        (si vous n'avez pas encore de compte, Gitlab <a href="https://docs.gitlab.com/ee/security/identity_verification.html#credit-card-verification">vous demandera votre numéro de carte de crédit</a> juste pour vérifier votre identité)
+        <strong>Gitlab.com</strong> qui est un hébergeur professionnel.<br>
+        Si vous n'avez pas encore de compte, Gitlab demandera à <a href="https://docs.gitlab.com/ee/security/identity_verification.html" target="_blank">vérifier votre identité</a> avec un n° de téléphone ou de carte bleue.
       </li>
       <li>
-        <strong>ScribouGit</strong>, l'hébergement géré par l'équipe de Scribouilli
-        (si vous n'avez pas encore de compte, nous prendrons le temps de le valider manuellement (cela peut prendre quelques jours))
+        <strong>ScribouGit</strong>, l'hébergement géré par l'équipe de Scribouilli.<br>
+        Si vous n'avez pas encore de compte, nous prendrons le temps de le valider manuellement (cela peut prendre quelques jours).
       </li>
-      <li>Microsoft GitHub®, si vous l'utilisez déjà</li>
+      <li>Microsoft GitHub®, si vous l'utilisez déjà.</li>
     </ul>
 
     <ul class="buttons">

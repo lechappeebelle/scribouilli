@@ -308,7 +308,13 @@ export default class GitAgent {
         this.#onMergeConflict &&
           this.#onMergeConflict([
             {
-              message: `Garder la version actuelle du site web en ligne (et perdre les changements récents dans l'atelier)`,
+              message: `Garder le contenu de l'atelier`,
+              resolution: () => {
+                return this.forcePush()
+              },
+            },
+            {
+              message: `Garder le contenu du site web`,
               resolution: async () => {
                 const currentBranch = await this.currentBranch()
                 if (!currentBranch) {
@@ -326,12 +332,6 @@ export default class GitAgent {
                 await this.checkout(targetedRemoteBranch)
 
                 await this.branch(currentBranch, true, true)
-              },
-            },
-            {
-              message: `Garder la version actuelle de l'atelier (et perdre la version en actuellement ligne)`,
-              resolution: () => {
-                return this.forcePush()
               },
             },
           ])

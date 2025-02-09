@@ -15,10 +15,6 @@
     /** @type {ScribouilliState["currentRepository"]} */
     export let currentRepository
 
-    /** @type {string | undefined} */
-    let repositoryURL
-    $: repositoryURL = currentRepository?.publicRepositoryURL;
-
     /** @type {ScribouilliState["conflict"]} */
     export let conflict;
 
@@ -36,51 +32,45 @@
 <!-- Ne pas montrer la bannière d'avertissement de conflit dans le header dans l'écran de résolution de conflit -->
 <Skeleton {currentRepository} {buildStatus} {showArticles} conflict={undefined}>
     <article>
-        <h1>Problème de synchronisation</h1>
+        <h1 class="h2">Votre site ne peut plus se mettre à jour</h1>
+
+        <p>Le contenu de votre site a été modifié à 2 endroits différents :</p>
+
+        <ul class="list-with-dot">
+            <li>Soit par 2 personnes en même temps, sur 2 ordinateurs différents</li>
+            <li>Soit à la fois dans l'atelier et sur votre code dans ScribouGit / Gitlab / Github</li>
+        </ul>
 
         <p>
-            La version du site web dans l'atelier sur cet ordinateur/téléphone et la version du site web en ligne
-            actuellement sont désynchronisées.
-            Celà peut être dû au fait que tu as modifié une page directement dans Github/Gitlab ou qu'un.e collègue/ami.e
-            travaille sur le site de manière simultannée
-        </p>
+            Cela provoque un conflit car les modifications se trouvent sur la même page. <br>
+            <strong>C'est à vous de choisir lesquelles conserver</strong>. <br>
+            Attention, les autres modifications <strong>seront perdues</strong>.</p>
 
-        <p>
-            La conséquence est que, pour le moment, tu ne peux plus mettre à jour le site web depuis l'atelier Scribouilli
-            (mais tu peux continuer à modifier ce qu'il y a dans l'atelier)
-        </p>
+        <p>Vous pouvez choisir le contenu :</p>
 
-        <p>
-            Mais <strong>ça va bien se passer</strong> ! On va résoudre ça tranquillement !<br>
-            On va proposer 2 choix : imposer la version actuelle de l'atelier ou ramener l'atelier à la version actuelle
-            du site web.<br>
-            Dans les deux cas, <strong>des données vont être perdues</strong>, donc ça vaut le coup de
-            <strong>prendre le temps</strong> de prendre la bonne décision
-        </p>
-        <p>
-            <strong>Avant de prendre la décision</strong>, ça peut valoir le coup de : <strong>discuter avec les
-            autres personnes qui travaillent sur le site</strong> pour se rendre compte des changements qui
-            pourraient être perdus en imposant ce qui est actuellement dans ton atelier<br>
-            Ou alors <a href={repositoryURL}>d'aller regarder les fichiers dans github/gitlab</a> pour se rendre compte
-            de ce qui pourrait être perdu<br>
-            Il est encore temps de modifier le contenu de l'atelier
-        </p>
+        <ul class="list-with-dot">
+            <li>qui se trouve dans l'atelier</li>
+            <li>qui se trouve sur le site web</li>
+        </ul>
 
-        <p> Voici les options :</p>
+        <p>Vous pouvez prendre le temps de retourner voir dans l'atelier ou sur votre site web quels sont les contenus présents avant de faire votre choix.</p>
 
-        <ul class="options">
-            {#if newConflictOptions}
+        <h2>Que préférez-vous ?</h2>
+
+        {#if newConflictOptions}
+            <ul class="options">
                 {#each newConflictOptions as {message, resolution}}
                     <li>
-                        <p>{message}</p>
-                        <button class="btn__medium btn" on:click={resolution}>Je choisis cette option !</button>
+                        <button class="btn" on:click={resolution}>{message}</button>
                     </li>
                 {/each}
-            {:else}
-                Woops... gros problème, on n'arrive pas à trouver les options. Scribouilli est vraiment très cassé !
-                Tu peux prévenir l'équipe ou alors revenir dans quelques heures ou jours
-            {/if}
-        </ul>
+            </ul>
+        {:else}
+            <p>
+                Woops… gros problème, nous n'arrivons pas à trouver les options. Scribouilli est vraiment très cassé !<br>
+                Vous pouvez prévenir l'équipe ou alors revenir dans quelques heures ou jours.
+            </p>
+        {/if}
     </article>
 </Skeleton>
 

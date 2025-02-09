@@ -149,11 +149,10 @@
 </header>
 
 {#if conflict}
-  <section class="warning">
-    <p>⚠️ Attention ! L'atelier ne peut plus se synchroniser avec le site web parce que les versions
-    de l'un et de l'autre sont irréconciliables. Le site ne va plus se mettre à jour</p>
+  <section class="warning warning-center">
+    <p><span aria-hidden='true'>⚠️</span> <strong>Attention !</strong> Votre site ne peut plus se mettre à jour.</p>
 
-    <p><a href={resolutionURL}>Aller sur la page dédiée de résolution du problème</a></p>
+    <p><a href={resolutionURL} class="btn btn__medium">Voir le problème</a></p>
   </section>
 {/if}
 
@@ -205,12 +204,34 @@
     max-width: 40rem;
     margin: 0 auto;
     padding: 1rem;
-    background-color: orange;
     border-radius: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 3rem;
+    background-color: #fff4e5;
+    border: 3px solid #ff4800;
 
-    p{
+    p {
       margin-top: 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .btn {
+      background-color: none;
+    }
+
+    &-center {
+      text-align: center;
+
+      strong {
+        display: block;
+      }
+
+      span {
+        display: block;
+        font-size: 200%;
+      }
     }
   }
 
