@@ -1,5 +1,5 @@
 <script>
-  /** @type {any} */
+  /** @type {{ status: BuildStatus }} */
   export let buildStatus
 
   /** @typedef {import("./../store.js").ScribouilliState} ScribouilliState */
@@ -20,7 +20,7 @@
   if (buildStatus) {
     // @ts-ignore
     buildStatus.subscribe(s => {
-      if (s) {
+      if (s) { 
         status = s
       }
     })
@@ -28,7 +28,7 @@
 
   /** @type {boolean} */
   let notPublic
-  $: notPublic = buildStatus === 'not_public'
+  $: notPublic = buildStatus.status === 'not_public'
 
   $: buildStatusClass = buildStatus ? `build-${status}` : undefined
 
