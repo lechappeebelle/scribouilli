@@ -1,6 +1,5 @@
 //@ts-check
 
-import { guessBaseURL } from './actions/setup.js'
 import GitAgent from './GitAgent.js'
 import { getOAuthServiceAPI } from './oauth-services-api/index.js'
 
@@ -83,22 +82,18 @@ const ERROR_DELAY = 60
  */
 async function getBuildStatus(currentRepository, gitAgent) {
   const publishedWebsiteURL = await currentRepository.publishedWebsiteURL
-  const req = await fetch(publishedWebsiteURL, {
-    cache: 'no-store',
-  })
-
-  // If the website is a "private" GitLab repo, we will receive a redirection to
-  // GitLab to login.
-  const publishedDomain = new URL(
-    (await getOAuthServiceAPI().getPublishedWebsiteURL(currentRepository)) ??
-      guessBaseURL(currentRepository),
-  ).hostname
-
-  if (req.redirected && new URL(req.url).hostname !== publishedDomain) {
+  let html
+  try {
+    html = await fetch(publishedWebsiteURL, {
+      redirect: 'error',
+      cache: 'no-store',
+    }).then(r => r.text())
+  } catch {
+    // If the website is a "private" GitLab repo, we will receive a redirection to
+    // GitLab to login.
     return 'not_public'
   }
 
-  const html = await req.text()
   const dom = new DOMParser().parseFromString(html, 'text/html')
 
   const lastCommit = await gitAgent.currentCommit()
