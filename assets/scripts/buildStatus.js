@@ -1,6 +1,7 @@
 //@ts-check
 
 import GitAgent from './GitAgent.js'
+import { getOAuthServiceAPI } from './oauth-services-api/index.js'
 
 /**
  * @typedef {"in_progress" | "success" | "error"} BuildStatus
@@ -37,7 +38,6 @@ export default function (scribouilliGitRepo, gitAgent) {
      * @param {(status: BuildStatus) => any} callback
      */
     subscribe(callback) {
-      console.log('subscribe reaction.. ', callback)
       reaction = callback
     },
     checkStatus() {
@@ -100,10 +100,14 @@ async function getBuildStatus(currentRepository, gitAgent) {
         const hash = comment.split(': ').at(1) ?? 'unknown'
 
         if (hash === 'unknown') {
-          throw new Error('Unknown git hash')
+          // For some reason, the jekyll-git-hash plugin didn't work or was not
+          // correctly installed (this can happen with old Scribouilli websites
+          // that didn't use a Gemfile).
+          //
+          // In that case, fallback to the GitHub/GitLab API.
+          return await getViaApi(currentRepository)
         }
 
-        console.log(lastCommit)
         if (hash === lastCommit.oid.slice(0, 7)) {
           return 'success'
         } else {
@@ -123,4 +127,13 @@ async function getBuildStatus(currentRepository, gitAgent) {
   // old Scribouilli version: no changes were made since then, so we can assume
   // that the last build was successfull.
   return 'success'
+}
+
+/**
+ * @param {ScribouilliGitRepo} scribouilliGitRepo
+ */
+function getViaApi(scribouilliGitRepo) {
+  return getOAuthServiceAPI().getPagesWebsiteDeploymentStatus(
+    scribouilliGitRepo,
+  )
 }
