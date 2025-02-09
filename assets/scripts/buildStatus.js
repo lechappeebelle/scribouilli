@@ -1,10 +1,8 @@
 //@ts-check
 
+import { guessBaseURL } from './actions/setup.js'
 import GitAgent from './GitAgent.js'
-
-/**
- * @typedef {"in_progress" | "success" | "error"} BuildStatus
- */
+import { getOAuthServiceAPI } from './oauth-services-api/index.js'
 
 /**
  *
@@ -37,7 +35,6 @@ export default function (scribouilliGitRepo, gitAgent) {
      * @param {(status: BuildStatus) => any} callback
      */
     subscribe(callback) {
-      console.log('subscribe reaction.. ', callback)
       reaction = callback
     },
     checkStatus() {
@@ -76,9 +73,9 @@ export default function (scribouilliGitRepo, gitAgent) {
 const ERROR_DELAY = 60
 
 /**
- * mimoza includes the hash of the latest built commit in a comment in the HTML of each page.
- * We use that to know which version is currently online, and whether the last build succeeded
- * or not.
+ * mimoza includes the hash of the latest built commit in a comment in the HTML
+ * of each page. We use that to know which version is currently online, and
+ * whether the last build succeeded or not.
  *
  * @param {ScribouilliGitRepo} currentRepository
  * @param {GitAgent} gitAgent
@@ -86,9 +83,22 @@ const ERROR_DELAY = 60
  */
 async function getBuildStatus(currentRepository, gitAgent) {
   const publishedWebsiteURL = await currentRepository.publishedWebsiteURL
-  const html = await fetch(publishedWebsiteURL, {
+  const req = await fetch(publishedWebsiteURL, {
     cache: 'no-store',
-  }).then(r => r.text())
+  })
+
+  // If the website is a "private" GitLab repo, we will receive a redirection to
+  // GitLab to login.
+  const publishedDomain = new URL(
+    (await getOAuthServiceAPI().getPublishedWebsiteURL(currentRepository)) ??
+      guessBaseURL(currentRepository),
+  ).hostname
+
+  if (req.redirected && new URL(req.url).hostname !== publishedDomain) {
+    return 'not_public'
+  }
+
+  const html = await req.text()
   const dom = new DOMParser().parseFromString(html, 'text/html')
 
   const lastCommit = await gitAgent.currentCommit()
@@ -100,10 +110,14 @@ async function getBuildStatus(currentRepository, gitAgent) {
         const hash = comment.split(': ').at(1) ?? 'unknown'
 
         if (hash === 'unknown') {
-          throw new Error('Unknown git hash')
+          // For some reason, the jekyll-git-hash plugin didn't work or was not
+          // correctly installed (this can happen with old Scribouilli websites
+          // that didn't use a Gemfile).
+          //
+          // In that case, fallback to the GitHub/GitLab API.
+          return await getViaApi(currentRepository)
         }
 
-        console.log(lastCommit)
         if (hash === lastCommit.oid.slice(0, 7)) {
           return 'success'
         } else {
@@ -123,4 +137,13 @@ async function getBuildStatus(currentRepository, gitAgent) {
   // old Scribouilli version: no changes were made since then, so we can assume
   // that the last build was successfull.
   return 'success'
+}
+
+/**
+ * @param {ScribouilliGitRepo} scribouilliGitRepo
+ */
+function getViaApi(scribouilliGitRepo) {
+  return getOAuthServiceAPI().getPagesWebsiteDeploymentStatus(
+    scribouilliGitRepo,
+  )
 }
