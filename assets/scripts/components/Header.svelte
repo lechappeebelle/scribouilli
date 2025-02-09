@@ -28,7 +28,7 @@
 
   /** @type {boolean} */
   let notPublic
-  $: notPublic = buildStatus.status === 'not_public'
+  $: notPublic = status === 'not_public'
 
   $: buildStatusClass = buildStatus ? `build-${status}` : undefined
 
