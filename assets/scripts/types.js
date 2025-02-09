@@ -33,6 +33,10 @@
  */
 
 /**
+ * @typedef {"in_progress" | "success" | "error" | "not_public"} BuildStatus
+ */
+
+/**
  * @typedef {Object} OAuthServiceAPI
  * @property {(url: string, requestParams?: RequestInit) => Promise<Response>} callAPI
  * // https://isomorphic-git.org/docs/en/onAuth#oauth2-tokens
@@ -43,7 +47,7 @@
  * @property {(scribouilliGitRepo: ScribouilliGitRepo) => Promise<boolean>} isRepositoryReady
  * @property {() => Promise<GithubRepository[]>} getCurrentUserRepositories
  * @property {(scribouilliGitRepo: ScribouilliGitRepo) => Promise<any>} deploy
- * @property {(scribouilliGitRepo: ScribouilliGitRepo) => Promise<"success" | "error" | "in_progress">} getPagesWebsiteDeploymentStatus
+ * @property {(scribouilliGitRepo: ScribouilliGitRepo) => Promise<BuildStatus>} getPagesWebsiteDeploymentStatus
  * @property {(scribouilliGitRepo: ScribouilliGitRepo) => Promise<boolean>} isPagesWebsiteBuilt
  * @property {(scribouilliGitRepo: ScribouilliGitRepo) => Promise<string | undefined>} getPublishedWebsiteURL
  */
@@ -79,8 +83,6 @@
  * @property {Object} owner
  * @property {string} owner.login
  */
-
-/** @typedef {"building" | "built" | "errored"} BuildStatus */
 
 /**
  * @typedef {Object} EditeurFile

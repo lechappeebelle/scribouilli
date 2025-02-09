@@ -26,6 +26,10 @@
     })
   }
 
+  /** @type {boolean} */
+  let notPublic
+  $: notPublic = buildStatus === 'not_public'
+
   $: buildStatusClass = buildStatus ? `build-${status}` : undefined
 
   /** @type {Promise<string> | undefined } */
@@ -62,6 +66,12 @@
   /** @type {string} */
   let resolutionURL;
   $: resolutionURL = makeResolutionDesynchronisationURL(account || '', repoName || '')
+
+  /** @type {string | undefined} */
+  let gitlabSettingsUrl
+  $: gitlabSettingsUrl = currentRepository?.publicRepositoryURL
+    ? `${currentRepository.publicRepositoryURL}/edit#js-shared-permissions`
+    : undefined
 </script>
 
 <header>
@@ -144,6 +154,15 @@
     de l'un et de l'autre sont irréconciliables. Le site ne va plus se mettre à jour</p>
 
     <p><a href={resolutionURL}>Aller sur la page dédiée de résolution du problème</a></p>
+  </section>
+{/if}
+
+
+{#if notPublic}
+  <section class="warning">
+    <p>⚠️ Le site est pas public.</p>
+
+    <p><a href={gitlabSettingsUrl}>Ouvrir les paramètres</a></p>
   </section>
 {/if}
 
