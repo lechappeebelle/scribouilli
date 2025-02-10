@@ -225,7 +225,7 @@
     }
 
     .btn {
-      background-color: none;
+      background-color: transparent;
     }
 
     span {
