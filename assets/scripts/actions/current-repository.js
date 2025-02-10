@@ -12,7 +12,7 @@ import GitAgent from '../GitAgent.js'
 import { handleErrors, logMessage } from './../utils.js'
 import { fetchAuthenticatedUserLogin } from './current-user.js'
 import makeBuildStatus from './../buildStatus.js'
-import { writeFileAndCommit, writeFileAndPushChanges } from './file.js'
+import { file } from './file.js'
 import { getPagesList } from './page.js'
 import { getArticlesList } from './article.js'
 import { getOAuthServiceAPI } from '../oauth-services-api/index.js'
@@ -165,7 +165,7 @@ export const setBaseUrlInConfigIfNecessary = async baseUrl => {
     const configYmlContent = yaml.dump(config)
 
     console.log('configYmlContent', configYmlContent)
-    return writeFileAndPushChanges(
+    return file.writeFileAndPushChanges(
       '_config.yml',
       configYmlContent,
       'Mise à jour de `baseurl` dans la config',
@@ -203,7 +203,11 @@ export async function installPluginIfNecessary(plugin, version) {
       `  gem "${plugin}", "~> ${version}"\n\n` +
       gemFile.slice(pluginSectionStart)
 
-    await writeFileAndCommit('Gemfile', newGemfile, 'Ajout de la gem ' + plugin)
+    await file.writeFileAndCommit(
+      'Gemfile',
+      newGemfile,
+      'Ajout de la gem ' + plugin,
+    )
   } catch (e) {
     const message = e instanceof Error ? e.message : 'erreur inconnue'
     logMessage(
@@ -214,7 +218,7 @@ export async function installPluginIfNecessary(plugin, version) {
     )
   }
 
-  await writeFileAndPushChanges(
+  await file.writeFileAndPushChanges(
     '_config.yml',
     newConfig,
     'Ajout du plugin ' + plugin,
@@ -243,14 +247,14 @@ const getCurrentRepoConfig = () => {
 
 /**
  * @param {string} css
- * @returns {ReturnType<typeof writeFileAndPushChanges>}
+ * @returns {ReturnType<typeof file.writeFileAndPushChanges>}
  */
-export function saveCustomCSS(css) {
-  store.mutations.setTheme(css)
-  store.state.buildStatus.setBuildingAndCheckStatusLater(10000)
-  return writeFileAndPushChanges(
+export function saveCustomCSS(css, localStore = store) {
+  localStore.mutations.setTheme(css)
+  localStore.state.buildStatus.setBuildingAndCheckStatusLater(10000)
+  return file.writeFileAndPushChanges(
     CUSTOM_CSS_PATH,
     css,
-    'mise à jour du ficher de styles custom',
+    'mise à jour du fichier de styles custom',
   )
 }
