@@ -158,10 +158,17 @@
 
 
 {#if notPublic}
-  <section class="warning">
-    <p>⚠️ Le site est pas public.</p>
+  <section class="warning warning-public">
+    <p class="centered"><span>⚠️</span> <strong>Votre site n'est pas (encore) public.</strong></p>
 
-    <p><a href={gitlabSettingsUrl}>Ouvrir les paramètres</a></p>
+    <p>Pour le rendre public, il vous faut :</p>
+
+    <ol>
+      <li>Aller sur la page "Paramètres / Général / <a href="{gitlabSettingsUrl}">Visibilité, fonctionnalités du projet, autorisations</a>" de Gitlab</li>
+      <li>Trouver la sous-section "<strong>Pages</strong>"</li>
+      <li>Choisir, au lieu de "Only project members", "<strong>Everyone with access</strong>" dans la liste déroulante</li>
+      <li>Enregistrer le changement en appuyant sur <strong>le bouton bleu "Save changes"</strong></li>
+    </ol>
   </section>
 {/if}
 
@@ -201,9 +208,9 @@
   }
 
   .warning{
-    max-width: 40rem;
+    max-width: 46rem;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 2rem;
     border-radius: 1rem;
     margin-bottom: 3rem;
     background-color: #fff4e5;
@@ -221,17 +228,36 @@
       background-color: none;
     }
 
+    span {
+      display: block;
+      font-size: 200%;
+    }
+
+    .centered {
+      text-align: center;
+    }
+
     &-center {
       text-align: center;
 
       strong {
         display: block;
       }
+    }
 
-      span {
-        display: block;
-        font-size: 200%;
+    &-public {
+      span + strong {
+        font-size: 125%;
       }
+
+      ol {
+        margin-left: 1rem;
+
+        li {
+          margin-bottom: 1rem;
+        }
+      }
+
     }
   }
 
