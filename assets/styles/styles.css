@@ -80,6 +80,7 @@ img {
   --underline-img: linear-gradient(0deg, currentColor, currentColor);
   --external-link-content: '';
 }
+
 @font-face {
   font-family: 'Luciole';
   src:
@@ -112,6 +113,7 @@ footer {
   width: 800px;
   margin: 0 auto;
 }
+
 #pages .btn {
   margin-top: 0;
 }
@@ -144,7 +146,8 @@ h1 a {
   text-decoration: none;
 }
 
-h2 {
+h2,
+.h2 {
   font-size: 2.4rem;
 }
 
@@ -243,7 +246,7 @@ textarea {
   border-radius: 16px;
 }
 
-.white-zone + .white-zone {
+.white-zone+.white-zone {
   margin-top: 3rem;
 }
 
@@ -279,7 +282,7 @@ textarea {
   align-items: center;
 }
 
-.white-zone .radio + .radio {
+.white-zone .radio+.radio {
   margin-top: 1.5rem;
 }
 
@@ -309,18 +312,22 @@ details[open] div {
   padding-left: 1.2rem;
   border-left: 4px solid #912222;
 }
-details + details {
+
+details+details {
   margin-top: 0.8rem;
 }
+
 summary {
   display: flex;
   align-items: center;
   list-style: none;
   cursor: pointer;
 }
+
 summary::-webkit-details-marker {
   display: none;
 }
+
 summary::before {
   content: '?';
   display: flex;
@@ -340,11 +347,14 @@ code {
   background-color: rgba(255, 255, 255, 0.4);
 }
 
-a[href]:not(:where(
-  [href^="#"],
-  [href^="/"],
-  [href^="//localhost:8080"],
-  [href^="./"]
-)):after {
+a[href]:not(:where([href^="#"],
+    [href^="/"],
+    [href^="//localhost:8080"],
+    [href^="./"])):after {
   content: ' ➚';
+}
+
+ul.list-with-dot {
+  padding-left: 1rem;
+  list-style-type: disc;
 }

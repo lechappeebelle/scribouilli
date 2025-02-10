@@ -149,20 +149,26 @@
 </header>
 
 {#if conflict}
-  <section class="warning">
-    <p>⚠️ Attention ! L'atelier ne peut plus se synchroniser avec le site web parce que les versions
-    de l'un et de l'autre sont irréconciliables. Le site ne va plus se mettre à jour</p>
+  <section class="warning warning-center">
+    <p><span aria-hidden='true'>⚠️</span> <strong>Attention !</strong> Votre site ne peut plus se mettre à jour.</p>
 
-    <p><a href={resolutionURL}>Aller sur la page dédiée de résolution du problème</a></p>
+    <p><a href={resolutionURL} class="btn btn__medium">Voir le problème</a></p>
   </section>
 {/if}
 
 
 {#if notPublic}
-  <section class="warning">
-    <p>⚠️ Le site est pas public.</p>
+  <section class="warning warning-public">
+    <p class="centered"><span>⚠️</span> <strong>Votre site n'est pas (encore) public.</strong></p>
 
-    <p><a href={gitlabSettingsUrl}>Ouvrir les paramètres</a></p>
+    <p>Pour le rendre public, il vous faut :</p>
+
+    <ol>
+      <li>Aller sur la page "Paramètres / Général / <a href="{gitlabSettingsUrl}">Visibilité, fonctionnalités du projet, autorisations</a>" de Gitlab</li>
+      <li>Trouver la sous-section "<strong>Pages</strong>"</li>
+      <li>Choisir, au lieu de "Only project members", "<strong>Everyone with access</strong>" dans la liste déroulante</li>
+      <li>Enregistrer le changement en appuyant sur <strong>le bouton bleu "Save changes"</strong></li>
+    </ol>
   </section>
 {/if}
 
@@ -202,15 +208,56 @@
   }
 
   .warning{
-    max-width: 40rem;
+    max-width: 46rem;
     margin: 0 auto;
-    padding: 1rem;
-    background-color: orange;
+    padding: 2rem;
     border-radius: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 3rem;
+    background-color: #fff4e5;
+    border: 3px solid #ff4800;
 
-    p{
+    p {
       margin-top: 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .btn {
+      background-color: none;
+    }
+
+    span {
+      display: block;
+      font-size: 200%;
+    }
+
+    .centered {
+      text-align: center;
+    }
+
+    &-center {
+      text-align: center;
+
+      strong {
+        display: block;
+      }
+    }
+
+    &-public {
+      span + strong {
+        font-size: 125%;
+      }
+
+      ol {
+        margin-left: 1rem;
+
+        li {
+          margin-bottom: 1rem;
+        }
+      }
+
     }
   }
 
