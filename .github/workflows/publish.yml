@@ -18,6 +18,7 @@ jobs:
           npm pkg delete scripts.prepare
           npm ci
           npm run build
+          npm run test
 
       - name: Add and commit
         run: |
