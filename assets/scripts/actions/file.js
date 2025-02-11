@@ -10,20 +10,23 @@ import store from './../store.js'
  *
  * @returns {Promise<string>}
  */
-export const writeFileAndCommit = (fileName, content, commitMessage) => {
+export const writeFileAndCommit = async (
+  fileName,
+  content,
+  commitMessage,
+  localStore = store,
+) => {
   if (typeof commitMessage !== 'string' || commitMessage === '') {
     commitMessage = `Modification du fichier ${fileName}`
   }
-  const { gitAgent } = store.state
+  const { gitAgent } = localStore.state
 
   if (!gitAgent) {
     throw new TypeError('gitAgent is undefined')
   }
 
-  return gitAgent.writeFile(fileName, content).then(() => {
-    // @ts-ignore
-    return gitAgent.commit(commitMessage)
-  })
+  await gitAgent.writeFile(fileName, content)
+  return gitAgent.commit(commitMessage)
 }
 
 /**
@@ -33,20 +36,20 @@ export const writeFileAndCommit = (fileName, content, commitMessage) => {
  *
  * @returns {ReturnType<typeof GitAgent.prototype.safePush>}
  */
-export const writeFileAndPushChanges = (
+export const writeFileAndPushChanges = async (
   fileName,
   content,
   commitMessage = '',
+  localStore = store,
 ) => {
-  const { gitAgent } = store.state
+  const { gitAgent } = localStore.state
 
   if (!gitAgent) {
     throw new TypeError('gitAgent is undefined')
   }
 
-  return writeFileAndCommit(fileName, content, commitMessage).then(() =>
-    gitAgent.safePush(),
-  )
+  await writeFileAndCommit(fileName, content, commitMessage)
+  return gitAgent.safePush()
 }
 
 /**
@@ -55,8 +58,12 @@ export const writeFileAndPushChanges = (
  *
  * @returns {ReturnType<typeof GitAgent.prototype.commit>}
  */
-export const deleteFileAndCommit = (fileName, commitMessage = '') => {
-  const { gitAgent } = store.state
+export const deleteFileAndCommit = async (
+  fileName,
+  commitMessage = '',
+  localStore = store,
+) => {
+  const { gitAgent } = localStore.state
 
   if (!gitAgent) {
     throw new TypeError('gitAgent is undefined')
@@ -66,9 +73,8 @@ export const deleteFileAndCommit = (fileName, commitMessage = '') => {
     commitMessage = `Suppression du fichier ${fileName}`
   }
 
-  return gitAgent.removeFile(fileName).then(() => {
-    return gitAgent.commit(commitMessage)
-  })
+  await gitAgent.removeFile(fileName)
+  return gitAgent.commit(commitMessage)
 }
 
 /**
@@ -77,16 +83,19 @@ export const deleteFileAndCommit = (fileName, commitMessage = '') => {
  *
  * @returns {ReturnType<typeof GitAgent.prototype.safePush>}
  */
-export const deleteFileAndPushChanges = (fileName, commitMessage) => {
-  const { gitAgent } = store.state
+export const deleteFileAndPushChanges = (
+  fileName,
+  commitMessage,
+  localStore = store,
+) => {
+  const { gitAgent } = localStore.state
 
   if (!gitAgent) {
     throw new TypeError('gitAgent is undefined')
   }
 
-  return deleteFileAndCommit(fileName, commitMessage).then(() =>
-    gitAgent.safePush(),
-  )
+  deleteFileAndCommit(fileName, commitMessage, localStore)
+  return gitAgent.safePush()
 }
 
 export const file = {
