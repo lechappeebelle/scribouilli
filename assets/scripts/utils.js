@@ -131,7 +131,7 @@ export const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 /**
  *
- * @param {any} lastCommit
+ * @param {CommitObject} lastCommit
  * @returns {boolean}
  */
 export const isItStillCompiling = lastCommit => {
