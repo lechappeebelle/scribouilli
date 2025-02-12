@@ -8,7 +8,7 @@
     "ts": "tsc && echo 'Tout va bien 🎉'",
     "dev": "rollup -c -w",
     "build": "rollup -c",
-    "test": "mocha tests/**/*.test.js",
+    "test": "mocha --recursive tests",
     "prepare": "husky install",
     "svelte-check": "svelte-check --tsconfig tsconfig.json"
   },

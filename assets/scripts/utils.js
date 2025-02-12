@@ -128,3 +128,15 @@ export const logMessage = (errorMessage, caller = 'unknown', level = 'log') => {
  * @returns {Promise<void>}
  */
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+/**
+ *
+ * @param {any} lastCommit
+ * @returns {boolean}
+ */
+export const isItStillCompiling = lastCommit => {
+  const ERROR_DELAY = 60 * 1000
+  const currentTime = new Date().getTime() / 1000
+  const deltaTime = currentTime - lastCommit.committer.timestamp
+  return deltaTime <= ERROR_DELAY
+}
