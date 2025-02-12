@@ -6,6 +6,7 @@ import { format } from 'date-fns'
 import store from './store.js'
 
 /**
+ * Coucou
  * @summary Handle errors catched by Promises
  * @param {string} errorMessage
  */
