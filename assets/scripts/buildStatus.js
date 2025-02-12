@@ -45,7 +45,10 @@ export default function (scribouilliGitRepo, gitAgent) {
             reaction(repoStatus)
           }
 
-          if (repoStatus === 'in_progress') {
+          if (
+            repoStatus === 'in_progress' ||
+            repoStatus === 'needs_account_verification'
+          ) {
             scheduleCheck()
           }
         })
