@@ -152,7 +152,7 @@
 {/if}
 
 {#if needsAccountVerification}
-  <section class="warning warning-public">
+  <section class="warning warning-center">
     <p class="centered"><span>⚠️</span> <strong>Attention..</strong></p>
 
     <p>
@@ -238,21 +238,6 @@
       strong {
         display: block;
       }
-    }
-
-    &-public {
-      span + strong {
-        font-size: 125%;
-      }
-
-      ol {
-        margin-left: 1rem;
-
-        li {
-          margin-bottom: 1rem;
-        }
-      }
-
     }
   }
 
