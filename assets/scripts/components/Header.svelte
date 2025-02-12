@@ -26,6 +26,10 @@
     })
   }
 
+  /** @type {boolean}*/
+  let needsAccountVerification
+  $: needsAccountVerification = status === 'needs_account_verification'
+
   $: buildStatusClass = buildStatus ? `build-${status}` : undefined
 
   /** @type {Promise<string> | undefined } */
@@ -144,6 +148,22 @@
     <p><span aria-hidden='true'>⚠️</span> <strong>Attention !</strong> Votre site ne peut plus se mettre à jour.</p>
 
     <p><a href={resolutionURL} class="btn btn__medium">Voir le problème</a></p>
+  </section>
+{/if}
+
+{#if needsAccountVerification}
+  <section class="warning warning-public">
+    <p class="centered"><span>⚠️</span> <strong>Attention..</strong></p>
+
+    <p>
+      Votre site ne peut pas être publié car GitLab exige de vérifier votre identité avec un n° de téléphone (ou un n° de carte bleue).
+    </p>
+
+    <p>
+      <a href="https://gitlab.com/-/identity_verification" class="btn btn__medium">
+        Vérifier mon identité
+      </a>
+    </p>
   </section>
 {/if}
 
