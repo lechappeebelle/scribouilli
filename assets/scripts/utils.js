@@ -135,6 +135,7 @@ export const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
  * @returns {boolean}
  */
 export const isItStillCompiling = lastCommit => {
+  // Delay (in seconds) after which a non-updated website is assumed to have failed to build.
   const ERROR_DELAY = 60 * 1000
   const currentTime = new Date().getTime() / 1000
   const deltaTime = currentTime - lastCommit.committer.timestamp

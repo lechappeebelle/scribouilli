@@ -2,6 +2,7 @@
 
 import GitAgent from './GitAgent.js'
 import { getOAuthServiceAPI } from './oauth-services-api/index.js'
+import { isItStillCompiling } from './utils.js'
 
 /**
  *
@@ -68,9 +69,6 @@ export default function (scribouilliGitRepo, gitAgent) {
   return buildStatusObject
 }
 
-/** Delay (in seconds) after which a non-updated website is assumed to have failed to build. */
-const ERROR_DELAY = 60
-
 /**
  * mimoza includes the hash of the latest built commit in a comment in the HTML
  * of each page. We use that to know which version is currently online, and
@@ -90,9 +88,10 @@ async function getBuildStatus(currentRepository, gitAgent) {
 
     const url = new URL(req.url)
     if (req.redirected && url.hostname.endsWith('projects.gitlab.io')) {
-      throw new Error(
-        'Redirection vers la page de login GitLab: le site est privé',
-      )
+      // If the website is a "private" GitLab repo, we will receive a redirection to
+      // GitLab to login, which will fail because of CORS. In case it doesn't fail,
+      // the Error we throw above should still catch this redirection.
+      return 'not_public'
     }
 
     html = await req.text()
@@ -125,12 +124,10 @@ async function getBuildStatus(currentRepository, gitAgent) {
         if (hash === lastCommit.oid.slice(0, 7)) {
           return 'success'
         } else {
-          const currentTime = new Date().getTime() / 1000
-          const deltaTime = currentTime - lastCommit.committer.timestamp
-          if (deltaTime > ERROR_DELAY) {
-            return 'error'
-          } else {
+          if (isItStillCompiling(lastCommit)) {
             return 'in_progress'
+          } else {
+            return 'error'
           }
         }
       }
