@@ -93,21 +93,28 @@ async function getBuildStatus(currentRepository, gitAgent) {
 
   const url = new URL(response.url)
 
+  console.log(`[getBuildStatus] url : ${url.toString()}`)
+  console.log('[getBuildStatus] response :')
+  console.log(response)
+
   if (
     !response.ok &&
     !isItStillCompiling(lastCommit) &&
     url.hostname.endsWith('gitlab.io')
   ) {
+    console.log('[getBuildStatus] GitLab pages in 404')
     // We handle the case where GitLab redirects to the login page
     // because the account is not verified.
     return 'needs_account_verification'
   }
 
   if (!response.ok && !isItStillCompiling(lastCommit)) {
+    console.log('[getBuildStatus] error')
     return 'error'
   }
 
   if (!response.ok && isItStillCompiling(lastCommit)) {
+    console.log('[getBuildStatus] in_progress')
     return 'in_progress'
   }
 
@@ -131,11 +138,14 @@ async function getBuildStatus(currentRepository, gitAgent) {
         }
 
         if (hash === lastCommit.oid.slice(0, 7)) {
+          console.log('[getBuildStatus] success')
           return 'success'
         } else {
           if (isItStillCompiling(lastCommit)) {
+            console.log('[getBuildStatus] in_progress 2')
             return 'in_progress'
           } else {
+            console.log('[getBuildStatus] error 2')
             return 'error'
           }
         }
@@ -146,6 +156,8 @@ async function getBuildStatus(currentRepository, gitAgent) {
   // If there is no comment at all, we know that the website was built using an
   // old Scribouilli version: no changes were made since then, so we can assume
   // that the last build was successfull.
+
+  console.log('[getBuildStatus] success 2')
   return 'success'
 }
 
