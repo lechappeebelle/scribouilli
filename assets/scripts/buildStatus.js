@@ -45,7 +45,7 @@ export default function (scribouilliGitRepo, gitAgent) {
             reaction(repoStatus)
           }
 
-          if (repoStatus === 'in_progress' || repoStatus === 'not_public') {
+          if (repoStatus === 'in_progress') {
             scheduleCheck()
           }
         })
@@ -80,31 +80,33 @@ export default function (scribouilliGitRepo, gitAgent) {
  */
 async function getBuildStatus(currentRepository, gitAgent) {
   const publishedWebsiteURL = await currentRepository.publishedWebsiteURL
+  const lastCommit = await gitAgent.currentCommit()
+
   let html
-  try {
-    const req = await fetch(publishedWebsiteURL, {
-      cache: 'no-store',
-    })
 
-    const url = new URL(req.url)
-    if (req.redirected && url.hostname.endsWith('projects.gitlab.io')) {
-      // If the website is a "private" GitLab repo, we will receive a redirection to
-      // GitLab to login, which will fail because of CORS. In case it doesn't fail,
-      // the Error we throw above should still catch this redirection.
-      return 'not_public'
-    }
+  const response = await fetch(publishedWebsiteURL, {
+    cache: 'no-store',
+  })
 
-    html = await req.text()
-  } catch {
-    // If the website is a "private" GitLab repo, we will receive a redirection to
-    // GitLab to login, which will fail because of CORS. In case it doesn't fail,
-    // the Error we throw above should still catch this redirection.
-    return 'not_public'
+  const url = new URL(response.url)
+
+  if (response.redirected && url.hostname.endsWith('projects.gitlab.io')) {
+    // We handle the case where GitLab redirects to the login page
+    // because the account is not verified.
+    return 'needs_account_verification'
   }
 
-  const dom = new DOMParser().parseFromString(html, 'text/html')
+  if (!response.ok && isItStillCompiling(lastCommit)) {
+    return 'in_progress'
+  }
 
-  const lastCommit = await gitAgent.currentCommit()
+  if (!response.ok) {
+    return 'error'
+  }
+
+  html = await response.text()
+
+  const dom = new DOMParser().parseFromString(html, 'text/html')
 
   for (const node of dom.documentElement.childNodes) {
     if (node.nodeType === dom.COMMENT_NODE) {

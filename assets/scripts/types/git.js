@@ -16,8 +16,7 @@
  */
 
 /**
- * @description On pense que ça correspond au build status de GitHub?
- * @typedef {"in_progress" | "success" | "error" | "not_public"} BuildStatus
+ * @typedef {"in_progress" | "success" | "error" | "needs_account_verification" } BuildStatus
  */
 
 /**

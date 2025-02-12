@@ -26,10 +26,6 @@
     })
   }
 
-  /** @type {boolean} */
-  let notPublic
-  $: notPublic = status === 'not_public'
-
   $: buildStatusClass = buildStatus ? `build-${status}` : undefined
 
   /** @type {Promise<string> | undefined } */
@@ -67,11 +63,6 @@
   let resolutionURL;
   $: resolutionURL = makeResolutionDesynchronisationURL(account || '', repoName || '')
 
-  /** @type {string | undefined} */
-  let gitlabSettingsUrl
-  $: gitlabSettingsUrl = currentRepository?.publicRepositoryURL
-    ? `${currentRepository.publicRepositoryURL}/edit#js-shared-permissions`
-    : undefined
 </script>
 
 <header>
@@ -153,22 +144,6 @@
     <p><span aria-hidden='true'>⚠️</span> <strong>Attention !</strong> Votre site ne peut plus se mettre à jour.</p>
 
     <p><a href={resolutionURL} class="btn btn__medium">Voir le problème</a></p>
-  </section>
-{/if}
-
-
-{#if notPublic}
-  <section class="warning warning-public">
-    <p class="centered"><span>⚠️</span> <strong>Votre site n'est pas (encore) public.</strong></p>
-
-    <p>Pour le rendre public, il vous faut :</p>
-
-    <ol>
-      <li>Aller sur la page "Paramètres / Général / <a href="{gitlabSettingsUrl}">Visibilité, fonctionnalités du projet, autorisations</a>" de Gitlab</li>
-      <li>Trouver la sous-section "<strong>Pages</strong>"</li>
-      <li>Choisir, au lieu de "Only project members", "<strong>Everyone with access</strong>" dans la liste déroulante</li>
-      <li>Enregistrer le changement en appuyant sur <strong>le bouton bleu "Save changes"</strong></li>
-    </ol>
   </section>
 {/if}
 
