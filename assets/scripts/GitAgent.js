@@ -15,8 +15,6 @@ import FS from '@isomorphic-git/lightning-fs'
 import git from 'isomorphic-git'
 import http from 'isomorphic-git/http/web/index.js'
 
-import './types.js'
-
 const DEFAULT_CORS_PROXY_URL = 'https://cors.isomorphic-git.org'
 
 /** @typedef {import('isomorphic-git')} isomorphicGit */

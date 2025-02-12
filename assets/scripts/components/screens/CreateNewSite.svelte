@@ -4,8 +4,6 @@
   import { createRepositoryForCurrentAccount } from "../../actions/setup.js";
   import { templates } from '../../config.js';
 
-  import '../../types.js'
-
   let name = "";
   let loading = false;
   let hasError = false

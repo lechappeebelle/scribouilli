@@ -14,7 +14,6 @@ import Store from 'baredux'
 // DO NOT import x from 'remember' // do it in an action instead
 // DO NOT import x from './actions/*.js' // you're making an action, so add an action instead
 
-import './types.js'
 import GitAgent from './GitAgent.js'
 
 /** @typedef { {message: string, resolution: (...args: any[]) => Promise<any>} } ResolutionOption */

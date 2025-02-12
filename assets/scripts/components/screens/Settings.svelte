@@ -3,7 +3,6 @@
 
   import Skeleton from '../Skeleton.svelte'
   import { createEventDispatcher } from 'svelte'
-  import './../../types.js'
 
   const dispatch = createEventDispatcher()
 

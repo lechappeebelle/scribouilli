@@ -3,8 +3,6 @@ import store from '../store.js'
 import GitHubAPI from './github.js'
 import GitlabAPI from './gitlab.js'
 
-import './../types.js'
-
 /**
  * @overlaod
  * @param {'github'} type
@@ -29,12 +27,11 @@ import './../types.js'
 const makeOAuthServiceAPI = ({ accessToken, origin }) => {
   const hostname = new URL(origin).hostname
 
-  if (hostname === 'github.com') 
-    return new GitHubAPI(accessToken)
+  if (hostname === 'github.com') return new GitHubAPI(accessToken)
   else {
     // assuming a gitlab instance
     return new GitlabAPI(accessToken, origin, () => {
-      if(!store.state.gitAgent){
+      if (!store.state.gitAgent) {
         throw new TypeError('store.state.gitAgent is undefined')
       }
       return store.state.gitAgent

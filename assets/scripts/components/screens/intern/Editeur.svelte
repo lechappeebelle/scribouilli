@@ -1,6 +1,4 @@
 <script>
-  import '../../../types.js'
-
   /** @type Promise<EditeurFile> */
   export let fileP
 

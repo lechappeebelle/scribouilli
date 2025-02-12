@@ -2,7 +2,6 @@
     import Skeleton from "../Skeleton.svelte";
     import {addConflictRemovalAndRedirectToResolution} from
     '../../actions/current-user.js'
-    import '../../types.js'
 
     /** @typedef {import("../../store.js").ScribouilliState} ScribouilliState */
 
