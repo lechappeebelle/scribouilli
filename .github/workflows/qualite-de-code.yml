@@ -16,7 +16,7 @@ jobs:
         npm run test
 
     - name: Run tsc with reviewdog
-      - uses: EPMatt/reviewdog-action-tsc@v1.8.0
+      uses: EPMatt/reviewdog-action-tsc@v1.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
