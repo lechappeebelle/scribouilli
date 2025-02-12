@@ -93,18 +93,22 @@ async function getBuildStatus(currentRepository, gitAgent) {
 
   const url = new URL(response.url)
 
-  if (response.redirected && url.hostname.endsWith('projects.gitlab.io')) {
+  if (
+    !response.ok &&
+    !isItStillCompiling(lastCommit) &&
+    url.hostname.endsWith('gitlab.io')
+  ) {
     // We handle the case where GitLab redirects to the login page
     // because the account is not verified.
     return 'needs_account_verification'
   }
 
-  if (!response.ok && isItStillCompiling(lastCommit)) {
-    return 'in_progress'
+  if (!response.ok && !isItStillCompiling(lastCommit)) {
+    return 'error'
   }
 
-  if (!response.ok) {
-    return 'error'
+  if (!response.ok && isItStillCompiling(lastCommit)) {
+    return 'in_progress'
   }
 
   html = await response.text()
