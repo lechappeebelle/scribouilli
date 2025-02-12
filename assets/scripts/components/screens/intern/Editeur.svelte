@@ -337,11 +337,22 @@
     }
   }
 
-  .preview > div {
-    height: calc(100% - 60px);
-    margin: 0.5em 0;
-    padding: 0.5em;
-    background-color: white;
+  .preview {
+    & > div {
+      height: calc(100% - 60px);
+      margin: 0.5em 0;
+      padding: 0.5em;
+      background-color: white;
+    }
+
+    ul,
+    ol {
+      margin-left: 1.5rem;
+    }
+
+    ul {
+      list-style-type: disc;
+    }
   }
 
   .actions-zone {
