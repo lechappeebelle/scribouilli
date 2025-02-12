@@ -4,15 +4,14 @@ import page from 'page'
 
 import store from './../store.js'
 import ScribouilliGitRepo, {
-  makePublicRepositoryURL, makeRepoId,
+  makePublicRepositoryURL,
+  makeRepoId,
 } from './../scribouilliGitRepo.js'
 import { getOAuthServiceAPI } from './../oauth-services-api/index.js'
 import { makeAtelierListPageURL } from './../routes/urls.js'
 import { logMessage } from './../utils.js'
 import { setBaseUrlInConfigIfNecessary } from './current-repository.js'
 import GitAgent from '../GitAgent.js'
-
-import '../types.js'
 
 /** @typedef {import('isomorphic-git')} isomorphicGit */
 
@@ -57,11 +56,10 @@ export const waitOauthProvider = () => {
  * @returns {Promise<ReturnType<isomorphicGit["setConfig"]>>}
  */
 export const setupLocalRepository = async () => {
-  
   const login = await store.state.login
-  const {gitAgent, email} = store.state
+  const { gitAgent, email } = store.state
 
-  if(!gitAgent){
+  if (!gitAgent) {
     throw new TypeError('gitAgent is undefined')
   }
   if (!login) {
@@ -154,17 +152,18 @@ export const createRepositoryForCurrentAccount = async (repoName, template) => {
   return (
     getOAuthServiceAPI()
       .createDefaultRepository(scribouilliGitRepo, template)
-      .then(({remoteURL}) => {
-
+      .then(({ remoteURL }) => {
         const gitAgent = new GitAgent({
           repoId: makeRepoId(owner, escapedRepoName),
           remoteURL: remoteURL,
-          onMergeConflict : (/** @type {import("./../store.js").ResolutionOption[] | undefined} */ resolutionOptions) => {
+          onMergeConflict: (
+            /** @type {import("./../store.js").ResolutionOption[] | undefined} */ resolutionOptions,
+          ) => {
             store.mutations.setConflict(resolutionOptions)
           },
-          auth: getOAuthServiceAPI().getOauthUsernameAndPassword()
+          auth: getOAuthServiceAPI().getOauthUsernameAndPassword(),
         })
-      
+
         store.mutations.setGitAgent(gitAgent)
 
         // Il est nécessaire d'attendre que le repo soit prêt sur la remote

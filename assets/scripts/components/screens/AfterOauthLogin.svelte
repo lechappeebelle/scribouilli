@@ -1,7 +1,7 @@
 <script>
   import Skeleton from "./../Skeleton.svelte";
   import SiteCreationLoader from "./../loaders/SiteCreationLoader.svelte";
-  import './../../types.js'
+
   /** @type {Promise<GithubRepository[]|Void>} */
   export let currentUserReposP;
   /** @type {string} */

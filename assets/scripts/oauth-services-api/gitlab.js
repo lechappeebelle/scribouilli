@@ -1,6 +1,5 @@
 //@ts-check
 
-import './../types.js'
 import GitAgent from '../GitAgent.js'
 
 /**

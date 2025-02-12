@@ -1,7 +1,5 @@
 import { gitHubApiBaseUrl } from './../config.js'
 
-import './../types.js'
-
 const GITHUB_JSON_ACCEPT_HEADER = 'application/vnd.github+json'
 
 /**
@@ -50,10 +48,7 @@ export default class GitHubAPI {
   }
 
   /** @type {OAuthServiceAPI["createDefaultRepository"]} */
-  createDefaultRepository(
-    { owner, repoName, publishedWebsiteURL },
-    template,
-  ) {
+  createDefaultRepository({ owner, repoName, publishedWebsiteURL }, template) {
     // Generate a new repository from the theme repository
     return this.callAPI(
       `${gitHubApiBaseUrl}/repos/${template.githubRepoId}/generate`,
@@ -70,55 +65,54 @@ export default class GitHubAPI {
         }),
       },
     )
-    .then(r => r.json())
-    .then(({url: newRepoAPIURL, clone_url}) => {
-      // Activate GitHub Pages
-      return this.callAPI(`${newRepoAPIURL}/pages`, {
-        method: 'POST',
-        headers: {
-          Authorization: 'token ' + this.accessToken,
-          Accept: GITHUB_JSON_ACCEPT_HEADER,
-        },
-        body: JSON.stringify({
-          build_type: 'workflow',
-        })
-      })
-      .then(async () => {
-        console.info('Setup repository settings')
-        // Setup repository settings
-        return this.callAPI(newRepoAPIURL, {
+      .then(r => r.json())
+      .then(({ url: newRepoAPIURL, clone_url }) => {
+        // Activate GitHub Pages
+        return this.callAPI(`${newRepoAPIURL}/pages`, {
           method: 'POST',
           headers: {
             Authorization: 'token ' + this.accessToken,
             Accept: GITHUB_JSON_ACCEPT_HEADER,
           },
           body: JSON.stringify({
-            homepage: (await publishedWebsiteURL) || '',
-            has_issues: false,
-            has_projects: false,
-            has_wiki: false,
+            build_type: 'workflow',
           }),
         })
-      })
-      .then(() => {
-        console.info('Apply topic to the new repository')
-        // Apply topic to the new repository
-        return this.callAPI(`${newRepoAPIURL}/topics`, {
-          headers: {
-            Authorization: 'token ' + this.accessToken,
-            Accept: GITHUB_JSON_ACCEPT_HEADER,
-          },
-          method: 'PUT',
-          body: JSON.stringify({
-            owner,
-            repo: repoName,
-            names: ['site-scribouilli'],
+          .then(async () => {
+            console.info('Setup repository settings')
+            // Setup repository settings
+            return this.callAPI(newRepoAPIURL, {
+              method: 'POST',
+              headers: {
+                Authorization: 'token ' + this.accessToken,
+                Accept: GITHUB_JSON_ACCEPT_HEADER,
+              },
+              body: JSON.stringify({
+                homepage: (await publishedWebsiteURL) || '',
+                has_issues: false,
+                has_projects: false,
+                has_wiki: false,
+              }),
+            })
           })
-        })
+          .then(() => {
+            console.info('Apply topic to the new repository')
+            // Apply topic to the new repository
+            return this.callAPI(`${newRepoAPIURL}/topics`, {
+              headers: {
+                Authorization: 'token ' + this.accessToken,
+                Accept: GITHUB_JSON_ACCEPT_HEADER,
+              },
+              method: 'PUT',
+              body: JSON.stringify({
+                owner,
+                repo: repoName,
+                names: ['site-scribouilli'],
+              }),
+            })
+          })
+          .then(() => ({ remoteURL: clone_url }))
       })
-      .then(() => ({remoteURL: clone_url}))
-
-    })
   }
 
   /** @type {OAuthServiceAPI["deploy"]} */
