@@ -1,0 +1,25 @@
+name: Qualité de code
+
+on: [pull_request]
+
+jobs:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout 🛎️
+      uses: actions/checkout@v4
+
+    - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+      run: |
+        npm pkg delete scripts.prepare
+        npm ci
+        npm run build
+        npm run test
+
+    name: Run tsc with reviewdog
+      - uses: EPMatt/reviewdog-action-tsc@v1.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          level: warning
+          filter_mode: file
+          fail_on_error: true
