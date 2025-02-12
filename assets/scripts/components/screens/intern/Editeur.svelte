@@ -220,21 +220,23 @@
             </details>
           </div>
 
-          <div class="content">
-            <label for="content">Contenu</label>
-            <textarea
-              bind:value={file.content}
-              id="content"
-              cols="30"
-              rows="10"
-            />
-          </div>
-          {#if preview}
-            <div class="preview">
-              <h4>Aperçu</h4>
-              <div>{@html preview}</div>
+          <div class="content-preview">
+            <div class="content">
+              <label for="content">Contenu</label>
+              <textarea
+                bind:value={file.content}
+                id="content"
+                cols="30"
+                rows="10"
+              />
             </div>
-          {/if}
+            {#if preview}
+              <div class="preview">
+                <h4>Aperçu</h4>
+                <div>{@html preview}</div>
+              </div>
+            {/if}
+          </div>
           <div class="actions-zone">
             <a href={listPrefix} class="btn__retour" on:click={onBackClick}
               >Retour</a
@@ -296,6 +298,29 @@
       input {
         display: inline;
       }
+    }
+  }
+
+  .content-preview {
+    display: flex;
+    gap: 1rem;
+    width: 90vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -45vw;
+    margin-right: -45vw;
+
+    & > div {
+      flex-basis: 50%;
+    }
+
+    @media (max-width: 960px) {
+      flex-direction: column;
+      right: auto;
+      left: auto;
+      width: 100%;
+      margin-inline: auto;
     }
   }
 
