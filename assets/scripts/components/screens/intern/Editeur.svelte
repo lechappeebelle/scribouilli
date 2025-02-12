@@ -178,7 +178,7 @@
                   </a>
                   … ou
                   <a
-                    href="https://developer.mozilla.org/fr/docs/Learn/Getting_started_with_the_web/HTML_basics"
+                    href="https://developer.mozilla.org/fr/docs/Learn_web_development/Core/Structuring_content"
                     target="_blank"
                   >
                     apprendre le HTML
