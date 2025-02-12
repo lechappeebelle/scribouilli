@@ -128,3 +128,16 @@ export const logMessage = (errorMessage, caller = 'unknown', level = 'log') => {
  * @returns {Promise<void>}
  */
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+/**
+ *
+ * @param {CommitObject} lastCommit
+ * @returns {boolean}
+ */
+export const isItStillCompiling = lastCommit => {
+  // Delay (in seconds) after which a non-updated website is assumed to have failed to build.
+  const ERROR_DELAY = 60 * 1000
+  const currentTime = new Date().getTime() / 1000
+  const deltaTime = currentTime - lastCommit.committer.timestamp
+  return deltaTime <= ERROR_DELAY
+}
